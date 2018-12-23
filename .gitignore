@@ -1,1 +1,5 @@
 /.idea
+.env
+/.docker/db/data
+/src/db.sqlite3
+*.pyc

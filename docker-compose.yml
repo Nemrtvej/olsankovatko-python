@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+    db:
+        image: postgres:10.1
+#        restart: always
+        environment:
+          - POSTGRES_DB=${DB_NAME}
+          - POSTGRES_USER=${DB_USER}
+          - POSTGRES_PASSWORD=${DB_PASS}
+        ports:
+          - 6543:5432
+        volumes:
+          - ./.docker/db/conf/:/docker-entrypoint-initdb.d/
+          - ./.docker/db/data:/var/lib/postgresql/data/
+
+
+    app:
+        build:
+            dockerfile: ./.docker/app/Dockerfile
+            context: .
+        command: python /code/manage.py runserver 0.0.0.0:8000
+#        command: tail -f /dev/null
+        volumes:
+          - ./src:/code
+        ports:
+          - 8000:8000
+        depends_on:
+          - db
+
