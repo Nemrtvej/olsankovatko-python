@@ -3,3 +3,4 @@
 /.docker/db/data
 /src/db.sqlite3
 *.pyc
+.mypy_cache

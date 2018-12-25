@@ -1,0 +1,824 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <script id="org.ajax4jsf.queue_script" type="text/javascript">if (typeof A4J != 'undefined') { if (A4J.AJAX) { with (A4J.AJAX) {if (!EventQueue.getQueue('mainMenuForm')) { EventQueue.addQueue(new EventQueue('mainMenuForm',{'size':1} ,{'ignoreDupResponses':true} )) };if (!EventQueue.getQueue('j_id60')) { EventQueue.addQueue(new EventQueue('j_id60',{'size':1} ,{'ignoreDupResponses':true} )) };if (!EventQueue.getQueue('cdForm')) { EventQueue.addQueue(new EventQueue('cdForm',{'size':1} ,{'ignoreDupResponses':true,'queueoncomplete':function(request,event,data){smarcoms.messages.setScheduleMessagesTimeout();}} )) };if (!EventQueue.getQueue('classReservationDetailForm')) { EventQueue.addQueue(new EventQueue('classReservationDetailForm',{'size':1} ,{'ignoreDupResponses':true} )) };if (!EventQueue.getQueue('relaxSelectForm')) { EventQueue.addQueue(new EventQueue('relaxSelectForm',{'size':1} ,{'ignoreDupResponses':true} )) };if (!EventQueue.getQueue('gymResForm')) { EventQueue.addQueue(new EventQueue('gymResForm',{'size':1} ,{'ignoreDupResponses':true} )) };}}};</script><link class="user" href="/pages/styles/smarcoms-styles.css" rel="stylesheet" type="text/css" /><script src="/pages/scripts/logging.js" type="text/javascript"></script><script src="/pages/scripts/PopupPanel.js" type="text/javascript"></script><script src="/pages/scripts/functions.js" type="text/javascript"></script><script src="/pages/scripts/ContentResizer.js" type="text/javascript"></script><script src="/pages/scripts/RichMessages.js" type="text/javascript"></script><script src="/pages/scripts/EventLayoutManager.js" type="text/javascript"></script><script src="/pages/scripts/Schedule.js" type="text/javascript"></script><script src="/pages/scripts/ScheduleEvent.js" type="text/javascript"></script><script src="/pages/scripts/ScheduleGridModel.js" type="text/javascript"></script><script src="/pages/scripts/ScheduleCellArea.js" type="text/javascript"></script><script src="/pages/scripts/resize.js" type="text/javascript"></script><script src="/pages/scripts/Application.js" type="text/javascript"></script><script src="/pages/scripts/dragdrop.js" type="text/javascript"></script><script src="/pages/scripts/Ajax.js" type="text/javascript"></script><script src="/pages/scripts/protoload.js" type="text/javascript"></script><script src="/pages/scripts/bundle/smarcoms-scripts-min.js" type="text/javascript"></script><script src="/a4j/g/3_3_3.Finalcz/smarcoms/jsf/component/renderkit/html/scripts/modalPanel.js.faces" type="text/javascript"></script><script src="/a4j/g/3_3_3.Finalcz/smarcoms/jsf/renderkit/html/scripts/color_functions.js.faces" type="text/javascript"></script><script src="/a4j/g/3_3_3.Finalcz/smarcoms/jsf/renderkit/html/scripts/js_color_picker_v2.js.faces" type="text/javascript"></script><script type="text/javascript"><!--
+
+var text = document.getElementById("org.ajax4jsf.queue_script");
+if (text) {
+    eval(text.innerHTML);
+}
+
+//--></script>
+
+    <script type="text/javascript"><!--
+
+    //jmenne prostory, kdyby jeste nebyly nahrany nase skripty
+    if (!window.smarcoms) {window.smarcoms = {};}
+    if (!window.smarcoms.log) {window.smarcoms.log = {};}
+    if (!smarcoms.date) {smarcoms.date = {};}
+    //pripravime si data pro formatovani aktualniho casu v hlavicce
+    smarcoms.date.labels = {"months":["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec",""],"days":["Ne","Po","Út","St","Čt","Pá","So"]};
+    //nasypej nam tam chybove hlasky
+    smarcoms.log.FAILURE_NETWORK_ERROR = "Nepodařilo se spojení se serverem.";
+    smarcoms.log.FAILURE_UNKNOWN_ERROR = "Neznámá chyba.";
+    smarcoms.log.FAILURE_CANNOT_DND = "Nelze použít tažení myší pro tuto rezervaci. Použijte editační formulář (kliknutím na rezervaci).";
+    //konfigurace logovani
+    smarcoms.log.config = {enableDebugLoggig : true, ieTrace: false, jsProfile: false, a4jDebug: false};
+
+    //--></script>
+
+    <title>Sportovní centrum Olšanka - Rozvrh - Bizzy</title></head><body id="j_id30"><div id="statusSaving"><div id="statusSaving.start" style="display: none">Ukládám...</div><div id="statusSaving.stop"></div></div><div id="statusLoading"><div id="statusLoading.start" style="display: none">Nahrávám...</div><div id="statusLoading.stop"></div></div><div id="statusRemoving"><div id="statusRemoving.start" style="display: none">Odebírám...</div><div id="statusRemoving.stop"></div></div><div id="statusCanceling"><div id="statusCanceling.start" style="display: none">Ruším...</div><div id="statusCanceling.stop"></div></div>
+
+
+<div id="menu"><form id="mainMenuForm" name="mainMenuForm" method="post" action="/Branch/pages/Schedule.faces"><table border="0" cellpadding="0" cellspacing="0" class="rich-toolbar " id="mainMenuForm:toolbar" width="100%"><tr valign="middle"><td class="rich-toolbar-item "><script type="text/javascript"><!--
+
+
+function oamSetHiddenInput(formname, name, value)
+{
+    var form = document.forms[formname];
+    if(typeof form.elements[name]!='undefined' && form.elements[name].nodeName=='INPUT')
+    {
+        form.elements[name].value=value;
+    }
+    else
+    {
+        var newInput = document.createElement('input');
+        newInput.setAttribute('type','hidden');
+        newInput.setAttribute('id',name);
+        newInput.setAttribute('name',name);
+        newInput.setAttribute('value',value);
+        form.appendChild(newInput);
+    }
+
+}
+
+
+function oamClearHiddenInput(formname, name, value)
+{
+    var form = document.forms[formname];
+    var hInput = form.elements[name];
+    if(typeof hInput !='undefined')
+    {
+        form.removeChild(hInput);
+    }
+
+}
+
+function oamSubmitForm(formName, linkId, target, params)
+{
+
+    var clearFn = 'clearFormHiddenParams_'+formName.replace(/-/g, '\$:').replace(/:/g,'_');
+    if(typeof window[clearFn] =='function')
+    {
+        window[clearFn](formName);
+    }
+
+    var form = document.forms[formName];
+    var oldTarget = form.target;
+    if(target != null)
+    {
+
+        form.target=target;
+    }
+    if((typeof params!='undefined') && params != null)
+    {
+
+        for(var i=0, param; (param = params[i]); i++)
+        {
+            oamSetHiddenInput(formName,param[0], param[1]);
+        }
+
+    }
+
+    oamSetHiddenInput(formName,formName +':'+'_idcl',linkId);
+
+    if(form.onsubmit)
+    {
+        var result=form.onsubmit();
+        if((typeof result=='undefined')||result)
+        {
+            try
+            {
+                form.submit();
+            }
+            catch(e){}
+        }
+
+    }
+    else
+    {
+        try
+        {
+            form.submit();
+        }
+        catch(e){}
+    }
+
+    form.target=oldTarget;
+    if((typeof params!='undefined') && params != null)
+    {
+
+        for(var i=0, param; (param = params[i]); i++)
+        {
+            oamClearHiddenInput(formName,param[0], param[1]);
+        }
+
+    }
+
+    oamClearHiddenInput(formName,formName +':'+'_idcl',linkId);return false;
+}
+
+
+//--></script><a href="#" onclick="return oamSubmitForm('mainMenuForm','mainMenuForm:header_time');" id="mainMenuForm:header_time" class="header_time">--</a></td><td class="rich-toolbar-item "><a href="#" onclick="return oamSubmitForm('mainMenuForm','mainMenuForm:schedule_button');" id="mainMenuForm:schedule_button" class="schedule_button">Rozvrhy</a></td><td style="width:100%"></td><td class="rich-toolbar-item  " style=";"><label for="mainMenuForm:j_id51">Jazyk</label></td><td class="rich-toolbar-item  " style=";"><select name="mainMenuForm:j_id51" size="1" onchange="submit();">	<option value="cs" selected="selected">česky (výchozí)</option>	<option value="de">deutsch</option>	<option value="en">english</option>	<option value="pl">polski</option></select></td></tr></table><input type="hidden" autocomplete="off" name="mainMenuForm" value="mainMenuForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="mainMenuForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="mainMenuForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+function clear_mainMenuForm() {
+    _clearJSFFormParameters('mainMenuForm','',['mainMenuForm:j_idcl','mainMenuForm:_link_hidden_']);
+}
+function clearFormHiddenParams_mainMenuForm(){clear_mainMenuForm();}
+function clearFormHiddenParams_mainMenuForm(){clear_mainMenuForm();}
+clear_mainMenuForm();
+//--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form>
+</div>
+
+<div id="header" class="h_item" style=""><div id="logo" class="h_item">
+    <a href="http://www.hotelolsanka.cz/sport" target="_blank">
+        <h1 class="titleText" style="background: url(/pages/files/olsanka/Branch/logo.png) no-repeat; background-position: center center;"></h1>
+    </a></div><span id="initScripts"></span><div id="login" class="h_item "><form id="loginForm" name="loginForm" method="post" action="/Branch/pages/Schedule.faces"><table id="loginForm:messages" cellpadding="0" cellspacing="0" class="rich-messages login" style="display: none; "><tbody><tr><td></td></tr></tbody></table><input type="hidden" autocomplete="off" name="loginForm" value="loginForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="loginForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="loginForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+function clear_loginForm() {
+    _clearJSFFormParameters('loginForm','',['loginForm:j_idcl','loginForm:_link_hidden_']);
+}
+function clearFormHiddenParams_loginForm(){clear_loginForm();}
+function clearFormHiddenParams_loginForm(){clear_loginForm();}
+clear_loginForm();
+//--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form>
+    <form id="webLoginForm" method="POST" action="/Branch/pages/WebLogin.faces">
+        <table>
+            <tr><td>
+                <label for="username">Uživatelské jméno</label>
+            </td></tr>
+            <tr><td>
+                <input type="text" id="username" styleClass="ram" name="username" value="" />
+            </td></tr>
+            <tr><td>
+                <label for="password">Heslo</label>
+            </td></tr>
+            <tr><td>
+                <input type="password" id="password" class="ram thinner" name="password" value="" size="20" />
+                <input type="hidden" name="forwardUrl" value="/pages/Schedule.faces" />
+                <input type="hidden" name="courseId" value="" />
+                <input type="submit" value="Přihlásit" class="button" />
+            </td></tr>
+        </table>
+    </form><form id="j_id60" name="j_id60" method="post" action="/Branch/pages/Schedule.faces"><a href="#" id="j_id60:j_id62" name="j_id60:j_id62" onclick="A4J.AJAX.Submit('j_id60',event,{'oncomplete':function(request,event,data){Richfaces.showModalPanel('mp_password');},'similarityGroupingId':'j_id60:j_id62','parameters':{'j_id60:j_id62':'j_id60:j_id62'} } );return false;">Zapomenuté heslo</a>
+        <br /><a href="#" id="j_id60:j_id64" name="j_id60:j_id64" onclick="A4J.AJAX.Submit('j_id60',event,{'oncomplete':function(request,event,data){Richfaces.showModalPanel('mp_registration');},'similarityGroupingId':'j_id60:j_id64','parameters':{'j_id60:j_id64':'j_id60:j_id64'} } );return false;">Registrovat se</a>
+        <br /><a href="#" id="j_id60:j_id66" name="j_id60:j_id66" onclick="A4J.AJAX.Submit('j_id60',event,{'oncomplete':function(request,event,data){Richfaces.showModalPanel('mp_registration_verification');},'similarityGroupingId':'j_id60:j_id66','parameters':{'j_id60:j_id66':'j_id60:j_id66'} } );return false;">Zadat aktivační kód</a><input type="hidden" autocomplete="off" name="j_id60" value="j_id60" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="j_id60:j_idcl" value="" /><input type="hidden" autocomplete="off" name="j_id60:_link_hidden_" value="" /><script type="text/javascript"><!--
+        function clear_j_id60() {
+            _clearJSFFormParameters('j_id60','',['j_id60:j_idcl','j_id60:_link_hidden_']);
+        }
+        function clearFormHiddenParams_j_id60(){clear_j_id60();}
+        function clearFormHiddenParams_j_id60(){clear_j_id60();}
+        clear_j_id60();
+        //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form><?xml version="1.0" encoding="UTF-8" ?>
+    <div id="mp_registration" style="display: none;"><input id="mp_registrationOpenedState" name="mp_registrationOpenedState" type="hidden" /><div class="rich-modalpanel modal-form" id="mp_registrationContainer" style="position: absolute; display: none; z-index: 100; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="mp_registrationDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="mp_registrationFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="mp_registrationCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="mp_registrationShadowDiv"></div><div class="  rich-mpnl-content" id="mp_registrationContentDiv"><div class="rich-mpnl-text rich-mpnl-controls "><form id="registationCloseControll" name="registationCloseControll" method="post" action="/Branch/pages/Schedule.faces"><a class="quick-res-add-close" href="#" id="registationCloseControll:j_id71" name="registationCloseControll:j_id71" onclick="document.getElementById('mp_registration').component.hide();;A4J.AJAX.Submit('registationCloseControll',event,{'similarityGroupingId':'registationCloseControll:j_id72','parameters':{'registationCloseControll:j_id72':'registationCloseControll:j_id72'} } );A4J.AJAX.Submit('registationCloseControll',event,{'similarityGroupingId':'registationCloseControll:j_id71','parameters':{'registationCloseControll:j_id71':'registationCloseControll:j_id71'} } );return false;"></a><input type="hidden" autocomplete="off" name="registationCloseControll" value="registationCloseControll" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="registationCloseControll:j_idcl" value="" /><input type="hidden" autocomplete="off" name="registationCloseControll:_link_hidden_" value="" /><script type="text/javascript"><!--
+    function clear_registationCloseControll() {
+        _clearJSFFormParameters('registationCloseControll','',['registationCloseControll:j_idcl','registationCloseControll:_link_hidden_']);
+    }
+    function clearFormHiddenParams_registationCloseControll(){clear_registationCloseControll();}
+    function clearFormHiddenParams_registationCloseControll(){clear_registationCloseControll();}
+    clear_registationCloseControll();
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div><table border="0" cellpadding="0" cellspacing="0" id="mp_registrationContentTable" style="width: 620px;height: 1px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="mp_registrationHeader" style="white-space: nowrap;"><form id="j_id68" name="j_id68" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div class="form-header-title">Registrace</div><input type="hidden" name="j_id68_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="mp_registrationScrollDiv" style="position:relative;"><form id="registrationForm" name="registrationForm" method="post" class="modal-form" action="javascript:A4J.AJAX.SubmitForm('registrationForm',{'similarityGroupingId':'registrationForm','parameters':{'ajaxSingle':'registrationForm','registrationForm':'registrationForm'} ,'actionUrl':'/Branch/pages/Schedule.faces'} )"><dl id="registrationForm:j_id73" class="rich-messages" style="display: none; "><dt></dt></dl><span id="registrationForm:registrationStartGroup"><div class="rich-panel panel-blue" id="registrationForm:loginPanel"><div class="rich-panel-header " id="registrationForm:loginPanel_header">Přihlašovací údaje</div><div class="rich-panel-body " id="registrationForm:loginPanel_body"><table><tbody><tr><td><label class="required" for="registrationForm:username">Uživatelské jméno</label></td><td><input id="registrationForm:username" name="registrationForm:username" type="text" value="" /></td></tr>
+<tr><td><label class="required" for="registrationForm:password">Heslo</label></td><td><input type="password" id="registrationForm:password" name="registrationForm:password" /></td></tr>
+<tr><td><label class="required" for="registrationForm:password2">Potvrzení hesla</label></td><td><input type="password" id="registrationForm:password2" name="registrationForm:password2" /></td></tr>
+</tbody></table></div></div><div class="rich-panel panel-blue" id="registrationForm:contactPanel"><div class="rich-panel-header " id="registrationForm:contactPanel_header">Osobní údaje</div><div class="rich-panel-body " id="registrationForm:contactPanel_body"><div id="registrationForm:contact">
+						<table class="form-fields">
+							<tr>
+								<td><label class="required" for="registrationForm:firstname">Jméno</label>
+								</td>
+								<td><input id="registrationForm:firstname" name="registrationForm:firstname" type="text" value="" />
+								</td>
+								<td><label class="required" for="registrationForm:surname">Příjmení</label>
+								</td>
+								<td><input id="registrationForm:surname" name="registrationForm:surname" type="text" value="" />
+								</td>
+							</tr><tr id="registrationForm:contactRowId">
+								<td><label class="required" for="registrationForm:phone">Mobilní telefon</label>
+								</td>
+								<td><input id="registrationForm:phone" name="registrationForm:phone" type="text" value="" />
+								</td>
+								<td><label class="required" for="registrationForm:email">Email</label>
+								</td>
+								<td><input id="registrationForm:email" name="registrationForm:email" type="text" value="" />
+								</td></tr>
+							<tr>
+								<td><label id="registrationForm:birthdayLabel" for="registrationForm:birthday">Datum narození</label>
+								</td>
+								<td><span id="registrationForm:birthdayPopup"><input class="rich-calendar-input " id="registrationForm:birthdayInputDate" name="registrationForm:birthdayInputDate" style="vertical-align: middle; width: 121px;" type="text" readonly="readonly" /><img alt="" class="rich-calendar-button " id="registrationForm:birthdayPopupButton" style="vertical-align: middle" src="/pages/images/ico_kalendar2.png" /><input autocomplete="off" id="registrationForm:birthdayInputCurrentDate" name="registrationForm:birthdayInputCurrentDate" style="display:none" type="hidden" value="12/2018" /></span><div id="registrationForm:birthdayIFrame" style="display: none;"></div><div id="registrationForm:birthday" style="display: none;"></div><div id="registrationForm:birthdayScript" style="display: none;"><script type="text/javascript"><!--
+                                Richfaces.Calendar.addLocale('cs_CZ', {'weekDayLabels':['Ned\u011Ble','Pond\u011Blí','Úterý','St\u0159eda','\u010Ctvrtek','Pátek','Sobota'] ,'weekDayLabelsShort':['Ne','Po','Út','St','\u010Ct','Pá','So'] ,'monthLabels':['leden','únor','b\u0159ezen','duben','kv\u011Bten','\u010Derven','\u010Dervenec','srpen','zá\u0159í','\u0159íjen','listopad','prosinec'] ,'monthLabelsShort':['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'] ,'minDaysInFirstWeek':4,'firstWeekDay':1} );
+                                new Calendar('registrationForm:birthday',
+                                    "cs_CZ",{'showFooter':false,'currentDate':new Date(2018,11,25),'datePattern':'dd.MM.yyyy','boundaryDatesMode':'scroll'} ,{} ).load();
+                                //--></script></div>
+								</td>
+								<td><label for="registrationForm:address">Adresa</label><br />
+								</td>
+								<td rowspan="3" style="vertical-align: top;"><textarea name="registrationForm:address" id="registrationForm:address" rows="3"></textarea>
+								</td>
+							</tr>
+							<tr>
+								<td><label id="registrationForm:sexLabel" for="registrationForm:sex">Pohlaví</label>
+								</td>
+								<td><select id="registrationForm:sex" name="registrationForm:sex" size="1">	<option value="" selected="selected"></option>	<option value="MALE">Muž</option>	<option value="FEMALE">Žena</option></select>
+								</td>
+								<td>
+								</td>
+							</tr>
+						</table></div></div></div><div class="rich-panel panel-blue" id="registrationForm:settingPanel"><div class="rich-panel-body " id="registrationForm:settingPanel_body"><table><tbody><tr><td><label for="registrationForm:registration_preflang">Preferovaný jazyk</label></td><td><select id="registrationForm:registration_preflang" name="registrationForm:registration_preflang" size="1">	<option value="cs" selected="selected">česky (výchozí)</option>	<option value="de">deutsch</option>	<option value="en">english</option>	<option value="pl">polski</option></select></td></tr>
+</tbody></table></div></div><table><tbody><tr><td><input type="checkbox" name="registrationForm:registrationConfirmed" id="registrationForm:registrationConfirmed" value="true" class="required chkbox" /></td><td><label class="required" for="registrationForm:registrationConfirmed">Souhlasím se zpracováním údajů</label></td><td><a href="#" onclick="return oamSubmitForm('registrationForm','registrationForm:j_id113','_blank',[]);" target="_blank">Ochrana soukromí</a></td></tr>
+</tbody></table><table class="form-buttons"><tbody><tr><td><input class="button" id="registrationForm:j_id115" name="registrationForm:j_id115" onclick="A4J.AJAX.Submit('registrationForm',event,{'similarityGroupingId':'registrationForm:j_id115','parameters':{'registrationForm:j_id115':'registrationForm:j_id115'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );return false;" value="Odeslat" type="submit" /></td><td><input class="button" id="registrationForm:closeButton" name="registrationForm:closeButton" onclick="Richfaces.componentControl.performOperation(event,'onsubmit','#mp_registration','hide',{},true);A4J.AJAX.Submit('registrationForm',event,{'similarityGroupingId':'registrationForm:j_id116','parameters':{'registrationForm:j_id116':'registrationForm:j_id116'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );A4J.AJAX.Submit('registrationForm',event,{'similarityGroupingId':'registrationForm:closeButton','parameters':{'registrationForm:closeButton':'registrationForm:closeButton'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );return false;" value="Storno" type="button" /></td></tr>
+</tbody></table></span><input type="hidden" autocomplete="off" name="registrationForm" value="registrationForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="registrationForm:_link_hidden_" value="" /><input type="hidden" autocomplete="off" name="registrationForm:j_idcl" value="" /><script type="text/javascript"><!--
+    function clear_registrationForm() {
+        _clearJSFFormParameters('registrationForm','',['registrationForm:_link_hidden_','registrationForm:j_idcl']);
+    }
+    function clearFormHiddenParams_registrationForm(){clear_registrationForm();}
+    function clearFormHiddenParams_registrationForm(){clear_registrationForm();}
+    clear_registrationForm();
+    //--></script><script type="text/javascript"><!--
+    A4J.setupForm('registrationForm');
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="mp_registrationCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="mp_registrationLastHref"></button></div><script type="text/javascript"><!--
+    new SmcModalPanel('mp_registration',
+        {
+            width: 620,
+            height: -1,
+
+            minWidth: 620,
+            minHeight: -1,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "20",
+
+            zindex: 100,onresize: '',onmove: '',onshow: '',onhide: '',onbeforeshow: '',onbeforehide: '',
+
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: true,
+
+            scrollContent: true,
+            bottomSpace: 20});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div><?xml version="1.0" encoding="UTF-8" ?>
+    <div id="mp_registration_verification" style="display: none;"><input id="mp_registration_verificationOpenedState" name="mp_registration_verificationOpenedState" type="hidden" /><div class="rich-modalpanel modal-form" id="mp_registration_verificationContainer" style="position: absolute; display: none; z-index: 100; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="mp_registration_verificationDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="mp_registration_verificationFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="mp_registration_verificationCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="mp_registration_verificationShadowDiv"></div><div class="  rich-mpnl-content" id="mp_registration_verificationContentDiv"><div class="rich-mpnl-text rich-mpnl-controls "><form id="registationVerificationCloseControll" name="registationVerificationCloseControll" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><a href="#" onclick="var cf = function(){document.getElementById('mp_registration_verification').component.hide();};var oamSF = function(){return oamSubmitForm('registationVerificationCloseControll','registationVerificationCloseControll:j_id137');};return (cf()==false)? false : oamSF();" class="quick-res-add-close"> </a><input type="hidden" name="registationVerificationCloseControll_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div><table border="0" cellpadding="0" cellspacing="0" id="mp_registration_verificationContentTable" style="width: 400px;height: 1px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="mp_registration_verificationHeader" style="white-space: nowrap;"><form id="j_id134" name="j_id134" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div class="form-header-title">Aktivace účtu</div><input type="hidden" name="j_id134_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="mp_registration_verificationScrollDiv" style="position:relative;"><form id="registrationVerificationForm" name="registrationVerificationForm" method="post" class="modal-form" action="/Branch/pages/Schedule.faces"><dl id="registrationVerificationForm:j_id138" class="rich-messages" style="display: none; "><dt></dt></dl><span id="registrationVerificationForm:registrationVerification"><div class="form-big register-verification"><label for="registrationVerificationForm:code">Aktivační kód: </label><input id="registrationVerificationForm:code" name="registrationVerificationForm:code" type="text" value="" size="10" style="width:auto !important;" /><img alt="" class="rich-spacer " height="1" id="registrationVerificationForm:j_id141" src="/a4j/g/3_3_3.Finalimages/spacer.gif.faces" width="10px" /><input class="button" id="registrationVerificationForm:j_id142" name="registrationVerificationForm:j_id142" onclick="A4J.AJAX.Submit('registrationVerificationForm',event,{'similarityGroupingId':'registrationVerificationForm:j_id142','parameters':{'registrationVerificationForm:j_id142':'registrationVerificationForm:j_id142'} } );return false;" value="Potvrdit" type="submit" /></div></span><table class="form-buttons"><tbody><tr><td><input class="button" id="registrationVerificationForm:j_id145" name="registrationVerificationForm:j_id145" onclick="document.getElementById('mp_registration_verification').component.hide();;A4J.AJAX.Submit('registrationVerificationForm',event,{'similarityGroupingId':'registrationVerificationForm:j_id145','parameters':{'registrationVerificationForm:j_id145':'registrationVerificationForm:j_id145'} } );return false;" value="Zavřít" type="button" /></td></tr>
+    </tbody></table><input type="hidden" autocomplete="off" name="registrationVerificationForm" value="registrationVerificationForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="registrationVerificationForm:_link_hidden_" value="" /><input type="hidden" autocomplete="off" name="registrationVerificationForm:j_idcl" value="" /><script type="text/javascript"><!--
+    function clear_registrationVerificationForm() {
+        _clearJSFFormParameters('registrationVerificationForm','',['registrationVerificationForm:_link_hidden_','registrationVerificationForm:j_idcl']);
+    }
+    function clearFormHiddenParams_registrationVerificationForm(){clear_registrationVerificationForm();}
+    function clearFormHiddenParams_registrationVerificationForm(){clear_registrationVerificationForm();}
+    clear_registrationVerificationForm();
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="mp_registration_verificationCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="mp_registration_verificationLastHref"></button></div><script type="text/javascript"><!--
+    new SmcModalPanel('mp_registration_verification',
+        {
+            width: -1,
+            height: -1,
+
+            minWidth: 400,
+            minHeight: -1,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "20",
+
+            zindex: 100,onresize: '',onmove: '',onshow: '',onhide: '',onbeforeshow: '',onbeforehide: '',
+
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: true,
+
+            scrollContent: true,
+            bottomSpace: 10});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div><?xml version="1.0" encoding="UTF-8" ?>
+    <div id="mp_password" style="display: none;"><input autocomplete="off" id="mp_passwordOpenedState" name="mp_passwordOpenedState" type="hidden" /><div class="rich-modalpanel modal-form" id="mp_passwordContainer" style="position: absolute; display: none; z-index: 100; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="mp_passwordDiv" style="z-index: -1;"><button class="rich-mpnl-button" id="mp_passwordFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="mp_passwordCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="mp_passwordShadowDiv"></div><div class=" rich-mpnl-content" id="mp_passwordContentDiv"><div class="rich-mpnl-text rich-mpnl-controls "><form id="passwordCloseControll" name="passwordCloseControll" method="post" action="/Branch/pages/Schedule.faces"><a class="quick-res-add-close" href="#" id="passwordCloseControll:j_id149" name="passwordCloseControll:j_id149" onclick="document.getElementById('mp_password').component.hide();;A4J.AJAX.Submit('passwordCloseControll',event,{'similarityGroupingId':'passwordCloseControll:j_id150','parameters':{'passwordCloseControll:j_id150':'passwordCloseControll:j_id150'} } );A4J.AJAX.Submit('passwordCloseControll',event,{'similarityGroupingId':'passwordCloseControll:j_id149','parameters':{'passwordCloseControll:j_id149':'passwordCloseControll:j_id149'} } );return false;"></a><input type="hidden" autocomplete="off" name="passwordCloseControll" value="passwordCloseControll" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="passwordCloseControll:_link_hidden_" value="" /><input type="hidden" autocomplete="off" name="passwordCloseControll:j_idcl" value="" /><script type="text/javascript"><!--
+    function clear_passwordCloseControll() {
+        _clearJSFFormParameters('passwordCloseControll','',['passwordCloseControll:_link_hidden_','passwordCloseControll:j_idcl']);
+    }
+    function clearFormHiddenParams_passwordCloseControll(){clear_passwordCloseControll();}
+    function clearFormHiddenParams_passwordCloseControll(){clear_passwordCloseControll();}
+    clear_passwordCloseControll();
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div><table border="0" cellpadding="0" cellspacing="0" class="rich-mp-content-table" id="mp_passwordContentTable" style="width: 200px;height: 100px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="mp_passwordHeader" style="white-space: nowrap;"><div class="form-header-title">Obnova hesla</div></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><form id="passwordForm" name="passwordForm" method="post" class="modal-form" action="javascript:A4J.AJAX.SubmitForm('passwordForm',{'similarityGroupingId':'passwordForm','parameters':{'ajaxSingle':'passwordForm','passwordForm':'passwordForm'} ,'actionUrl':'/Branch/pages/Schedule.faces'} )"><dl id="passwordForm:j_id151" class="rich-messages" style="display: none; "><dt></dt></dl><table><tbody><tr><td><span class="password-info-text">Pro obnovení hesla je nutné zadat Vaše uživatelské jméno a email uvedený ve Vaší registraci.</span></td></tr>
+    <tr><td><table class="password-group"><tbody><tr><td><label class="required" for="passwordForm:username">Uživatelské jméno:</label></td><td><input id="passwordForm:username" name="passwordForm:username" type="text" value="" /></td></tr>
+    <tr><td><label class="required" for="passwordForm:mail">Email:</label></td><td><input id="passwordForm:mail" name="passwordForm:mail" type="text" value="" /></td></tr>
+    </tbody></table></td></tr>
+    <tr><td><table class="form-buttons"><tbody><tr><td><input class="button" id="passwordForm:j_id158" name="passwordForm:j_id158" onclick="A4J.AJAX.Submit('passwordForm',event,{'similarityGroupingId':'passwordForm:j_id159','parameters':{'passwordForm:j_id159':'passwordForm:j_id159'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );A4J.AJAX.Submit('passwordForm',event,{'similarityGroupingId':'passwordForm:j_id158','parameters':{'passwordForm:j_id158':'passwordForm:j_id158'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );return false;" value="Ok" type="submit" /></td><td><input class="button" id="passwordForm:closeButton" name="passwordForm:closeButton" onclick="Richfaces.componentControl.performOperation(event,'onsubmit','#mp_password','hide',{},true);A4J.AJAX.Submit('passwordForm',event,{'similarityGroupingId':'passwordForm:j_id160','parameters':{'passwordForm:j_id160':'passwordForm:j_id160'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );A4J.AJAX.Submit('passwordForm',event,{'similarityGroupingId':'passwordForm:closeButton','parameters':{'passwordForm:closeButton':'passwordForm:closeButton'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );return false;" value="Storno" type="button" /></td></tr>
+    </tbody></table></td></tr>
+    </tbody></table><input type="hidden" autocomplete="off" name="passwordForm" value="passwordForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="passwordForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="passwordForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+    function clear_passwordForm() {
+        _clearJSFFormParameters('passwordForm','',['passwordForm:j_idcl','passwordForm:_link_hidden_']);
+    }
+    function clearFormHiddenParams_passwordForm(){clear_passwordForm();}
+    function clearFormHiddenParams_passwordForm(){clear_passwordForm();}
+    clear_passwordForm();
+    //--></script><script type="text/javascript"><!--
+    A4J.setupForm('passwordForm');
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="mp_passwordCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="mp_passwordLastHref"></button></div><script type="text/javascript"><!--
+    new ModalPanel('mp_password',
+        {
+            width: -1,
+            height: -1,
+
+            minWidth: 200,
+            minHeight: 100,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "auto",
+
+            zindex: 100,onresize: '',onmove: '',onshow: '',onhide: '',onbeforeshow: '',onbeforehide: '',
+            domElementAttachment: "",
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: true,
+            overlapEmbedObjects: false});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div><?xml version="1.0" encoding="UTF-8" ?>
+    <div id="mp_passwordReset" style="display: none;"><input autocomplete="off" id="mp_passwordResetOpenedState" name="mp_passwordResetOpenedState" type="hidden" /><div class="rich-modalpanel modal-form" id="mp_passwordResetContainer" style="position: absolute; display: none; z-index: 100; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="mp_passwordResetDiv" style="z-index: -1;"><button class="rich-mpnl-button" id="mp_passwordResetFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="mp_passwordResetCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="mp_passwordResetShadowDiv"></div><div class=" rich-mpnl-content" id="mp_passwordResetContentDiv"><div class="rich-mpnl-text rich-mpnl-controls "><form id="passwordResetCloseControll" name="passwordResetCloseControll" method="post" action="/Branch/pages/Schedule.faces"><a class="quick-res-add-close" href="#" id="passwordResetCloseControll:j_id170" name="passwordResetCloseControll:j_id170" onclick="document.getElementById('mp_passwordReset').component.hide();;A4J.AJAX.Submit('passwordResetCloseControll',event,{'similarityGroupingId':'passwordResetCloseControll:j_id171','parameters':{'passwordResetCloseControll:j_id171':'passwordResetCloseControll:j_id171'} } );A4J.AJAX.Submit('passwordResetCloseControll',event,{'similarityGroupingId':'passwordResetCloseControll:j_id170','parameters':{'passwordResetCloseControll:j_id170':'passwordResetCloseControll:j_id170'} } );return false;"></a><input type="hidden" autocomplete="off" name="passwordResetCloseControll" value="passwordResetCloseControll" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="passwordResetCloseControll:_link_hidden_" value="" /><input type="hidden" autocomplete="off" name="passwordResetCloseControll:j_idcl" value="" /><script type="text/javascript"><!--
+    function clear_passwordResetCloseControll() {
+        _clearJSFFormParameters('passwordResetCloseControll','',['passwordResetCloseControll:_link_hidden_','passwordResetCloseControll:j_idcl']);
+    }
+    function clearFormHiddenParams_passwordResetCloseControll(){clear_passwordResetCloseControll();}
+    function clearFormHiddenParams_passwordResetCloseControll(){clear_passwordResetCloseControll();}
+    clear_passwordResetCloseControll();
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div><table border="0" cellpadding="0" cellspacing="0" class="rich-mp-content-table" id="mp_passwordResetContentTable" style="width: 200px;height: 100px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="mp_passwordResetHeader" style="white-space: nowrap;"><div class="form-header-title">Obnova hesla</div></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><form id="passwordResetForm" name="passwordResetForm" method="post" class="modal-form" action="javascript:A4J.AJAX.SubmitForm('passwordResetForm',{'similarityGroupingId':'passwordResetForm','parameters':{'ajaxSingle':'passwordResetForm','passwordResetForm':'passwordResetForm'} ,'actionUrl':'/Branch/pages/Schedule.faces'} )"><dl id="passwordResetForm:j_id172" class="rich-messages" style="display: none; "><dt></dt></dl><div class="form-buttons"><span class="password-info-text">Odkaz na obnovu hesla bohužel není platný.</span><table class="form-buttons"><tbody><tr><td><input class="button" id="passwordResetForm:finishButton" name="passwordResetForm:finishButton" onclick="Richfaces.componentControl.performOperation(event,'onsubmit','#mp_passwordReset','hide',{},true);A4J.AJAX.Submit('passwordResetForm',event,{'similarityGroupingId':'passwordResetForm:j_id186','parameters':{'passwordResetForm:j_id186':'passwordResetForm:j_id186'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );A4J.AJAX.Submit('passwordResetForm',event,{'similarityGroupingId':'passwordResetForm:finishButton','parameters':{'passwordResetForm:finishButton':'passwordResetForm:finishButton'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );return false;" value="Zavřít" type="button" /></td></tr>
+    </tbody></table></div><input type="hidden" autocomplete="off" name="passwordResetForm" value="passwordResetForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="passwordResetForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="passwordResetForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+    function clear_passwordResetForm() {
+        _clearJSFFormParameters('passwordResetForm','',['passwordResetForm:j_idcl','passwordResetForm:_link_hidden_']);
+    }
+    function clearFormHiddenParams_passwordResetForm(){clear_passwordResetForm();}
+    function clearFormHiddenParams_passwordResetForm(){clear_passwordResetForm();}
+    clear_passwordResetForm();
+    //--></script><script type="text/javascript"><!--
+    A4J.setupForm('passwordResetForm');
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="mp_passwordResetCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="mp_passwordResetLastHref"></button></div><script type="text/javascript"><!--
+    new ModalPanel('mp_passwordReset',
+        {
+            width: -1,
+            height: -1,
+
+            minWidth: 200,
+            minHeight: 100,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "auto",
+
+            zindex: 100,onresize: '',onmove: '',onshow: '',onhide: '',onbeforeshow: '',onbeforehide: '',
+            domElementAttachment: "",
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: true,
+            overlapEmbedObjects: false});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div></div><div id="infoblok" class="h_item"><form id="informationBlockForm" name="informationBlockForm" method="post" action="javascript:A4J.AJAX.SubmitForm('informationBlockForm',{'similarityGroupingId':'informationBlockForm','parameters':{'ajaxSingle':'informationBlockForm','informationBlockForm':'informationBlockForm'} ,'actionUrl':'/Branch/pages/Schedule.faces'} )"><table><tbody><tr><td><span id="informationBlockForm:infoblokText" class="infoBlockText">Prosíme o pozornost! Rezervace je závazná. V případě nezrušení či pozdního zrušení rezervace (NEJPOZDĚJI 6 HODIN PŘED ZAČÁTKEM REZERVACE) bude účtována plná cena služby. Viz rezervační řád na http://www.hotelolsanka.cz/sport/rezervace/. Děkujeme za pochopení.</span></td></tr>
+</tbody></table><input type="hidden" autocomplete="off" name="informationBlockForm" value="informationBlockForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="informationBlockForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="informationBlockForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+function clear_informationBlockForm() {
+    _clearJSFFormParameters('informationBlockForm','',['informationBlockForm:j_idcl','informationBlockForm:_link_hidden_']);
+}
+function clearFormHiddenParams_informationBlockForm(){clear_informationBlockForm();}
+function clearFormHiddenParams_informationBlockForm(){clear_informationBlockForm();}
+clear_informationBlockForm();
+//--></script><script type="text/javascript"><!--
+A4J.setupForm('informationBlockForm');
+//--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div>
+</div>
+<div id="small_header" class="small-header" style="display:none;"><form id="j_id210" name="j_id210" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded">
+    <a href="#" onclick="$('small_header').hide(); $('header').show();smarcoms.ScheduleResizer.resizeForHeader();smarcoms.cookies.create('small_header', false, 365); return false;" class="open-header-link"> </a><input id="j_id210:j_id212" name="j_id210:j_id212" type="submit" value="Odhlásit" class="logout" />
+    <span class="user-name">Anonymous</span><span class="user-label">Uživatel</span><input type="hidden" name="j_id210_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form>
+</div>
+
+
+<div id="middle"><form id="scheduleNavigForm" name="scheduleNavigForm" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div id="scheduleNavigForm:navigace" class="navigace"><a class="rich-tglctrl cx" href="#" id="scheduleNavigForm:leftPanelControl" onclick="smarcoms.cookies.create('leftPanel', smarcoms.leftPanel.isOpened('cdForm:leftPanel') ? 'closed' : 'opened', 365);smarcoms.ScheduleResizer.resizeContent(!smarcoms.leftPanel.isOpened('cdForm:leftPanel'));;A4J.AJAX.Submit('scheduleNavigForm',event,{'similarityGroupingId':'scheduleNavigForm:j_id219','parameters':{'scheduleNavigForm:j_id219':'scheduleNavigForm:j_id219'} } ); TogglePanelManager.toggleOnClient('cdForm:leftPanel',null);; return false;" onkeypress="smarcoms.cookies.create('leftPanel', smarcoms.leftPanel.isOpened('cdForm:leftPanel') ? 'closed' : 'opened', 365);smarcoms.ScheduleResizer.resizeContent(!smarcoms.leftPanel.isOpened('cdForm:leftPanel'));;A4J.AJAX.Submit('scheduleNavigForm',event,{'similarityGroupingId':'scheduleNavigForm:j_id220','parameters':{'scheduleNavigForm:j_id220':'scheduleNavigForm:j_id220'} } )">Otevřít menu</a>
+
+    <div id="sipky"><a href="#" id="scheduleNavigForm:j_id222" name="scheduleNavigForm:j_id222" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('scheduleNavigForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit(); smarcoms.special.scrollToTopLeft('content');},'similarityGroupingId':'scheduleNavigForm:j_id222','parameters':{'scheduleNavigForm:j_id222':'scheduleNavigForm:j_id222'} ,'containerId':'scheduleNavigForm:schedule\x2Dnavig\x2Dregion'} );return false;"><img src="/pages/images/larr.png" alt="larr" /></a><a href="#" id="scheduleNavigForm:j_id224" name="scheduleNavigForm:j_id224" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('scheduleNavigForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit(); smarcoms.special.scrollToTopLeft('content');},'similarityGroupingId':'scheduleNavigForm:j_id224','parameters':{'scheduleNavigForm:j_id224':'scheduleNavigForm:j_id224'} ,'containerId':'scheduleNavigForm:schedule\x2Dnavig\x2Dregion'} );return false;"><img src="/pages/images/rarr.png" alt="rarr" /></a>
+    </div><label for="scheduleNavigForm:schedule_calendar">Datum</label><span id="scheduleNavigForm:schedule_calendarPopup"><input class="rich-calendar-input " id="scheduleNavigForm:schedule_calendarInputDate" name="scheduleNavigForm:schedule_calendarInputDate" style="vertical-align: middle; " type="text" value="15.1.2019" readonly="readonly" /><img alt="" class="rich-calendar-button " id="scheduleNavigForm:schedule_calendarPopupButton" style="vertical-align: middle" src="/pages/images/calendar_schd.png" /><input autocomplete="off" id="scheduleNavigForm:schedule_calendarInputCurrentDate" name="scheduleNavigForm:schedule_calendarInputCurrentDate" style="display:none" type="hidden" value="01/2019" /></span><div id="scheduleNavigForm:schedule_calendarIFrame" style="display: none;"></div><div id="scheduleNavigForm:schedule_calendar" style="display: none;"></div><div id="scheduleNavigForm:schedule_calendarScript" style="display: none;"><script type="text/javascript"><!--
+    new Calendar('scheduleNavigForm:schedule_calendar',
+        "cs_CZ",{'showFooter':false,'style':'z\x2Dindex: 2000; ','selectedDate':new Date(2019,0,15,0,0,0),'currentDate':new Date(2019,0,15),'datePattern':'d.M.yyyy','onchanged':function(event){App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('scheduleNavigForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit(); smarcoms.special.scrollToTopLeft('content');},'similarityGroupingId':'scheduleNavigForm:j_id229','parameters':{'scheduleNavigForm:j_id229':'scheduleNavigForm:j_id229'} ,'containerId':'scheduleNavigForm:schedule\x2Dnavig\x2Dregion'} )},'boundaryDatesMode':'scroll'} ,{} ).load();
+    //--></script></div><a class="today-link" href="#" id="scheduleNavigForm:today_link" name="scheduleNavigForm:today_link" onclick="document.getElementById('scheduleNavigForm:schedule_calendar').component.selectDate(new Date());return false;;A4J.AJAX.Submit('scheduleNavigForm',event,{'similarityGroupingId':'scheduleNavigForm:today_link','parameters':{'scheduleNavigForm:today_link':'scheduleNavigForm:today_link'} ,'containerId':'scheduleNavigForm:schedule\x2Dnavig\x2Dregion'} );return false;">Dnes</a><label for="scheduleNavigForm:service_filter_menu">Služba:</label><select id="scheduleNavigForm:service_filter_menu" name="scheduleNavigForm:service_filter_menu" size="1" onchange="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('scheduleNavigForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit(); smarcoms.special.scrollToTopLeft('content'); document.body.className = 'p43724'},'similarityGroupingId':'scheduleNavigForm:j_id233','parameters':{'scheduleNavigForm:j_id233':'scheduleNavigForm:j_id233'} ,'containerId':'scheduleNavigForm:schedule\x2Dnavig\x2Dregion'} )">	<option value="2301845">Aqua aerobic</option>	<option value="43724" selected="selected">Badminton</option>	<option value="40357">Cvičení</option>	<option value="40434">Masáže</option>	<option value="1969738">Posilovna</option>	<option value="40217">Stolní tenis</option>	<option value="2324903">Venkovní lekce</option></select><label for="scheduleNavigForm:view_filter_menu">Zobrazení:</label><select id="scheduleNavigForm:view_filter_menu" name="scheduleNavigForm:view_filter_menu" size="1" onchange="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('scheduleNavigForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit(); smarcoms.special.scrollToTopLeft('content');},'similarityGroupingId':'scheduleNavigForm:j_id244','parameters':{'scheduleNavigForm:j_id244':'scheduleNavigForm:j_id244'} ,'containerId':'scheduleNavigForm:schedule\x2Dnavig\x2Dregion'} )">	<option value="horizontal_service_week">Týden</option>	<option value="horizontal_service_dayandweek">Dnes + 7 dní</option>	<option value="horizontal_service_dayand3days">Dnes + 3 dny</option>	<option value="horizontal_service_dayand6days">Dnes + 6 dní</option>	<option value="horizontal_service_day" selected="selected">Jeden den</option>	<option value="horizontal_resource_week">Detailní pohled</option>	<option value="horizontal_services_all">Všechny služby</option>	<option value="horizontal_services_all_instructor">Všechny služby (personál)</option>	<option value="vertical_service_day">Jeden den (vertikální)</option>	<option value="vertical_resource_week">Detailní pohled (vertikální)</option>	<option value="horizontal_resource_week_compact">Detailní pohled (kompaktní)</option></select></div><input type="hidden" name="scheduleNavigForm_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form>
+    <div class="messageContainer scheduleMessageContainer" onclick="smarcoms.messages.hideScheduleMessages();return false;"><dl id="schedule-messages" class="rich-messages global schedule" style="display: none; "><dt></dt></dl>
+    </div><span id="schedule-container"><form id="cdForm" name="cdForm" method="post" action="/Branch/pages/Schedule.faces"><div id="cdForm:serviceTabsContainer"><div id="cdForm:serviceTabs" class="sluzby">
+	      <div class="sluzba "><a href="#" id="cdForm:j_id249:0:serviceSelectButton" name="cdForm:j_id249:0:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:0:serviceSelectButton','parameters':{'serviceId':'2301845','cdForm:j_id249:0:serviceSelectButton':'cdForm:j_id249:0:serviceSelectButton'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Aqua aerobic</a>
+	      </div>
+	      <div class="sluzba sel"><a href="#" id="cdForm:j_id249:1:serviceSelectButton" name="cdForm:j_id249:1:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:1:serviceSelectButton','parameters':{'cdForm:j_id249:1:serviceSelectButton':'cdForm:j_id249:1:serviceSelectButton','serviceId':'43724'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Badminton</a>
+	      </div>
+	      <div class="sluzba "><a href="#" id="cdForm:j_id249:2:serviceSelectButton" name="cdForm:j_id249:2:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:2:serviceSelectButton','parameters':{'serviceId':'40357','cdForm:j_id249:2:serviceSelectButton':'cdForm:j_id249:2:serviceSelectButton'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Cvičení</a>
+	      </div>
+	      <div class="sluzba "><a href="#" id="cdForm:j_id249:3:serviceSelectButton" name="cdForm:j_id249:3:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:3:serviceSelectButton','parameters':{'serviceId':'40434','cdForm:j_id249:3:serviceSelectButton':'cdForm:j_id249:3:serviceSelectButton'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Masáže</a>
+	      </div>
+	      <div class="sluzba "><a href="#" id="cdForm:j_id249:4:serviceSelectButton" name="cdForm:j_id249:4:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:4:serviceSelectButton','parameters':{'cdForm:j_id249:4:serviceSelectButton':'cdForm:j_id249:4:serviceSelectButton','serviceId':'1969738'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Posilovna</a>
+	      </div>
+	      <div class="sluzba "><a href="#" id="cdForm:j_id249:5:serviceSelectButton" name="cdForm:j_id249:5:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:5:serviceSelectButton','parameters':{'cdForm:j_id249:5:serviceSelectButton':'cdForm:j_id249:5:serviceSelectButton','serviceId':'40217'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Stolní tenis</a>
+	      </div>
+	      <div class="sluzba "><a href="#" id="cdForm:j_id249:6:serviceSelectButton" name="cdForm:j_id249:6:serviceSelectButton" onclick="App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){try {App.reinit();} catch (e) {console.error(e)};},'similarityGroupingId':'cdForm:j_id249:6:serviceSelectButton','parameters':{'serviceId':'2324903','cdForm:j_id249:6:serviceSelectButton':'cdForm:j_id249:6:serviceSelectButton'} ,'containerId':'cdForm:schedule\x2Dnavig\x2Dservice\x2Dtabs\x2Dregion'} );return false;">Venkovní lekce</a>
+	      </div></div></div><span id="cdForm:schedule-content"><div id="cdForm:errorModal" style="display: none;"><input autocomplete="off" id="cdForm:errorModalOpenedState" name="cdForm:errorModalOpenedState" type="hidden" /><div class="rich-modalpanel " id="cdForm:errorModalContainer" style="position: absolute; display: none; z-index: 20500; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="cdForm:errorModalDiv" style="z-index: -1;"><button class="rich-mpnl-button" id="cdForm:errorModalFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="cdForm:errorModalCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="cdForm:errorModalShadowDiv"></div><div class="rich-mpnl-ovf-hd rich-mpnl-trim rich-mpnl-content" id="cdForm:errorModalContentDiv"><table border="0" cellpadding="0" cellspacing="0" class="rich-mp-content-table" id="cdForm:errorModalContentTable" style="height: 100%; width: 100%;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="cdForm:errorModalHeader" style="white-space: nowrap;"><div class="quick-header-title">Nastala chyba</div></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div id="cdForm:errorModalTextPanel"><span id="cdForm:errorModal_Text">chybovy text</span></div><div id="cdForm:errorModalButtons" class="form-buttons"><input id="cdForm:j_id255" name="cdForm:j_id255" type="submit" value="Obnovit rozvrh" onclick="window.location = window.location;" class="button" /></div></td></tr></table></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerN" style="width: 40px; height: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerE" style="height: 40px; width: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerS" style="width: 40px; height: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerW" style="height: 40px; width: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerNWU" style="width: 40px; height: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerNEU" style="height: 40px; width: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerNEL" style="width: 40px; height: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerSEU" style="height: 40px; width: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerSEL" style="width: 40px; height: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerSWL" style="height: 40px; width: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerSWU" style="width: 40px; height: 4px;"></div><div class="rich-mpnl-resizer" id="cdForm:errorModalResizerNWL" style="height: 40px; width: 4px;"></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="cdForm:errorModalCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="cdForm:errorModalLastHref"></button></div><script type="text/javascript"><!--
+    new ModalPanel('cdForm:errorModal',
+        {
+            width: -1,
+            height: 100,
+
+            minWidth: -1,
+            minHeight: -1,
+
+            resizeable: true,
+            moveable: true,
+
+            left: "auto",
+            top: "auto",
+
+            zindex: 20500,onresize: '',onmove: '',onshow: '',onhide: '',onbeforeshow: '',onbeforehide: '',
+            domElementAttachment: "",
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: false,
+            overlapEmbedObjects: false});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div>
+
+				<div id="content">
+				<div id="content-ie-resizer"><div class="context"><div class="rich-toggle-panel " id="cdForm:leftPanel"><div id="cdForm:leftPanel_closed" style="display: inherit">
+					<div style="display: none;"></div></div><div id="cdForm:leftPanel_opened" style="display: none"><div class="rich-pmenu " id="cdForm:sidebar" style="width:100%; "><div class="rich-pmenu-top-group-div" id="cdForm:reservationColorLegend"><table border="0" cellpadding="0" cellspacing="0" class="rich-pmenu-top-group  rich-pmenu-group  css-context " id="tablehidecdForm:reservationColorLegend" style="; "><tbody><tr id="row_cdForm:reservationColorLegend"><td class="rich-pmenu-nowrap rich-pmenu-group-self-icon ico_kalendar"><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAFjYGAAAAADAAE_.faces" alt="" width="16" height="16" id="leftIconcdForm:reservationColorLegend" /></td><td class="rich-pmenu-group-self-label rich-pmenu-group-self-label rich-pmenu-top-group-self-label" id="iconcdForm:reservationColorLegend" style="width:100%"><input autocomplete="off" name="panelMenuStatecdForm:reservationColorLegend" type="hidden" /><input autocomplete="off" name="panelMenuActioncdForm:reservationColorLegend" type="hidden" />Barvy rezervací</td><td class="rich-pmenu-group-self-icon rich-pmenu-top-group-self-icon"><img src="/pages/images/context_rarr.png" alt="" width="16" height="16" id="rightIconcdForm:reservationColorLegend" /></td></tr></tbody></table><div id="cdForm:reservation_status_confirmed" style="display: none;"><table border="0" cellpadding="0" cellspacing="0" class="rich-pmenu-item  " id="tablehidecdForm:reservation_status_confirmed"><tbody><tr id="row_cdForm:reservation_status_confirmed"><td class="rich-pmenu-nowrap rich-pmenu-item-icon "><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" height="16" width="16" /></td><td class="rich-pmenu-group-self-label rich-pmenu-item-label" id="iconcdForm:reservation_status_confirmed" style="width:100%"><input autocomplete="off" name="panelMenuActioncdForm:reservation_status_confirmed" type="hidden" /><span id="cdForm:reservation_status_confirmedPerms" style="display:none"></span><span id="cdForm:reservation_status_confirmedViewIds" style="display:none">/pages/Schedule.jspx</span><span id="cdForm:reservation_status_confirmedModuleKeys" style="display:none"></span><div style="background-color: #0033CC; color: #FFF !important;">Potvrzená</div></td><td><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" width="16" height="16" id="rightIconcdForm:reservation_status_confirmed" /></td></tr></tbody></table></div><div id="cdForm:reservation_status_underway" style="display: none;"><table border="0" cellpadding="0" cellspacing="0" class="rich-pmenu-item  " id="tablehidecdForm:reservation_status_underway"><tbody><tr id="row_cdForm:reservation_status_underway"><td class="rich-pmenu-nowrap rich-pmenu-item-icon "><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" height="16" width="16" /></td><td class="rich-pmenu-group-self-label rich-pmenu-item-label" id="iconcdForm:reservation_status_underway" style="width:100%"><input autocomplete="off" name="panelMenuActioncdForm:reservation_status_underway" type="hidden" /><span id="cdForm:reservation_status_underwayPerms" style="display:none"></span><span id="cdForm:reservation_status_underwayViewIds" style="display:none">/pages/Schedule.jspx</span><span id="cdForm:reservation_status_underwayModuleKeys" style="display:none"></span><div style="background-color: #3300CC; color: #FFF !important;">Právě probíhá</div></td><td><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" width="16" height="16" id="rightIconcdForm:reservation_status_underway" /></td></tr></tbody></table></div><div id="cdForm:reservation_status_done" style="display: none;"><table border="0" cellpadding="0" cellspacing="0" class="rich-pmenu-item  " id="tablehidecdForm:reservation_status_done"><tbody><tr id="row_cdForm:reservation_status_done"><td class="rich-pmenu-nowrap rich-pmenu-item-icon "><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" height="16" width="16" /></td><td class="rich-pmenu-group-self-label rich-pmenu-item-label" id="iconcdForm:reservation_status_done" style="width:100%"><input autocomplete="off" name="panelMenuActioncdForm:reservation_status_done" type="hidden" /><span id="cdForm:reservation_status_donePerms" style="display:none"></span><span id="cdForm:reservation_status_doneViewIds" style="display:none">/pages/Schedule.jspx</span><span id="cdForm:reservation_status_doneModuleKeys" style="display:none"></span><div style="background-color: #CCCCCC; color: #000 !important;">Proběhlá</div></td><td><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" width="16" height="16" id="rightIconcdForm:reservation_status_done" /></td></tr></tbody></table></div><div id="cdForm:reservation_status_blocked" style="display: none;"><table border="0" cellpadding="0" cellspacing="0" class="rich-pmenu-item  " id="tablehidecdForm:reservation_status_blocked"><tbody><tr id="row_cdForm:reservation_status_blocked"><td class="rich-pmenu-nowrap rich-pmenu-item-icon "><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" height="16" width="16" /></td><td class="rich-pmenu-group-self-label rich-pmenu-item-label" id="iconcdForm:reservation_status_blocked" style="width:100%"><input autocomplete="off" name="panelMenuActioncdForm:reservation_status_blocked" type="hidden" /><span id="cdForm:reservation_status_blockedPerms" style="display:none"></span><span id="cdForm:reservation_status_blockedViewIds" style="display:none">/pages/Schedule.jspx</span><span id="cdForm:reservation_status_blockedModuleKeys" style="display:none"></span><div style="background-color: #0000AA; color: #FFF !important;">Blokovaný termín</div></td><td><img src="/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" alt="" width="16" height="16" id="rightIconcdForm:reservation_status_blocked" /></td></tr></tbody></table></div></div><input autocomplete="off" id="cdForm:sidebarselectedItemName" name="cdForm:sidebarselectedItemName" type="hidden" /><div style="display:none"><script id="scriptcdForm:sidebar" type="text/javascript"><!--
+                var ids = new PanelMenu('cdForm:sidebar',false).getIds();
+                var params = new Object();new PanelMenuItem(ids, params,{myId:'cdForm:reservationColorLegend',parentId:'cdForm:sidebar'},{type:"node",onopen:";smarcoms.cookies.create('leftPanel_reservationColorLegend', true, 365)",onclose:";smarcoms.cookies.create('leftPanel_reservationColorLegend', false, 365)",event:"click",mode:"none",target:"",disabled:false,target:"",name:"reservationColorLegend"},{},new Array("rich-pmenu-hovered-element"),0,true,false,false,"A4J.AJAX.Submit('cdForm',event,{'similarityGroupingId':'cdForm:reservationColorLegend','parameters':{'cdForm:reservationColorLegend':'cdForm:reservationColorLegend'} } )","","right","/pages/images/sidebar/darr.png","/pages/images/context_rarr.png","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAFjYGAAAAADAAE_.faces");
+                var params = new Object();new PanelMenuItem(ids, params,{myId:'cdForm:reservation_status_confirmed',parentId:'cdForm:reservationColorLegend'},{type:"item",onopen:"",onclose:"",event:"click",mode:"none",target:"",disabled:false,target:"",name:"reservation_status_confirmed"},{},new Array("rich-pmenu-hovered-element"),1,false,false,false,"A4J.AJAX.Submit('cdForm',event,{'similarityGroupingId':'cdForm:reservation_status_confirmed','parameters':{'cdForm:reservation_status_confirmed':'cdForm:reservation_status_confirmed'} } )","","left","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" ,"" ,"/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces");
+                var params = new Object();new PanelMenuItem(ids, params,{myId:'cdForm:reservation_status_underway',parentId:'cdForm:reservationColorLegend'},{type:"item",onopen:"",onclose:"",event:"click",mode:"none",target:"",disabled:false,target:"",name:"reservation_status_underway"},{},new Array("rich-pmenu-hovered-element"),1,false,false,false,"A4J.AJAX.Submit('cdForm',event,{'similarityGroupingId':'cdForm:reservation_status_underway','parameters':{'cdForm:reservation_status_underway':'cdForm:reservation_status_underway'} } )","","left","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" ,"" ,"/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces");
+                var params = new Object();new PanelMenuItem(ids, params,{myId:'cdForm:reservation_status_done',parentId:'cdForm:reservationColorLegend'},{type:"item",onopen:"",onclose:"",event:"click",mode:"none",target:"",disabled:false,target:"",name:"reservation_status_done"},{},new Array("rich-pmenu-hovered-element"),1,false,false,false,"A4J.AJAX.Submit('cdForm',event,{'similarityGroupingId':'cdForm:reservation_status_done','parameters':{'cdForm:reservation_status_done':'cdForm:reservation_status_done'} } )","","left","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" ,"" ,"/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces");
+                var params = new Object();new PanelMenuItem(ids, params,{myId:'cdForm:reservation_status_blocked',parentId:'cdForm:reservationColorLegend'},{type:"item",onopen:"",onclose:"",event:"click",mode:"none",target:"",disabled:false,target:"",name:"reservation_status_blocked"},{},new Array("rich-pmenu-hovered-element"),1,false,false,false,"A4J.AJAX.Submit('cdForm',event,{'similarityGroupingId':'cdForm:reservation_status_blocked','parameters':{'cdForm:reservation_status_blocked':'cdForm:reservation_status_blocked'} } )","","left","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces","/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces" ,"" ,"/a4j/g/3_3_3.Finalorg.richfaces.renderkit.html.iconimages.PanelMenuIconSpacer/DATB/eAE7fv4KAATKAms_.faces");
+
+                //--></script></div></div></div><div style="display: none;"><input type="hidden" autocomplete="off" id="cdForm:leftPanel_input" name="cdForm:leftPanel" value="closed" /></div><script type="text/javascript">TogglePanelManager.add(new TogglePanel("cdForm:leftPanel", $A(["closed", "opened"]), "closed"));</script></div></div>
+
+				<div id="content-right"><div id="cdForm:scheduleBox">
+						<script><!--
+
+                        document.body.className='p43724';
+
+                        //--></script><span id="cdForm:reservation_confirm_dialog"></span><script id="cdForm:quickAddReservationRequest" type="text/javascript"><!--
+                //<![CDATA[
+                quickAddReservation=function(newReservationData){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){smarcoms.PopupPanel.showWhenNoErrors('schedule-messages', 'popupModal');},'similarityGroupingId':'cdForm:quickAddReservationRequest','parameters':{'cdForm:quickAddReservationRequest':'cdForm:quickAddReservationRequest','ajaxSingle':'cdForm:quickAddReservationRequest','newReservationData':newReservationData||App.getEmptyCellClickedData()} ,'containerId':'cdForm:schedule\x2Dmain\x2Dregion'} )};
+                //]]>
+                //--></script><script id="cdForm:addReservationRequest" type="text/javascript"><!--
+                //<![CDATA[
+                addReservation=function(newReservationData){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){smarcoms.util.openModalDialog('schedule-messages','mp_reservation');App.schedule.cleanMarkedCells();},'similarityGroupingId':'cdForm:addReservationRequest','parameters':{'ajaxSingle':'cdForm:addReservationRequest','cdForm:addReservationRequest':'cdForm:addReservationRequest','newReservationData':newReservationData||App.getEmptyCellClickedData()} ,'containerId':'cdForm:schedule\x2Dmain\x2Dregion'} )};
+                //]]>
+                //--></script><script id="cdForm:editReservationRequest" type="text/javascript"><!--
+                //<![CDATA[
+                editReservation=function(editReservationId){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){Richfaces.showModalPanel('mp_reservation');},'similarityGroupingId':'cdForm:editReservationRequest','parameters':{'cdForm:editReservationRequest':'cdForm:editReservationRequest','ajaxSingle':'cdForm:editReservationRequest','editReservationId':editReservationId||App.getReservationClickedData()} ,'containerId':'cdForm:schedule\x2Dmain\x2Dregion'} )};
+                //]]>
+                //--></script><script id="cdForm:deleteReservationRequest" type="text/javascript"><!--
+                //<![CDATA[
+                deleteReservation=function(editReservationId){A4J.AJAX.Submit('cdForm',null,{'status':'statusRemoving','similarityGroupingId':'cdForm:deleteReservationRequest','parameters':{'ajaxSingle':'cdForm:deleteReservationRequest','cdForm:deleteReservationRequest':'cdForm:deleteReservationRequest','editReservationId':editReservationId||App.getReservationClickedData()} ,'containerId':'cdForm:schedule\x2Dmain\x2Dregion'} )};
+                //]]>
+                //--></script><script id="cdForm:switchToOneDay" type="text/javascript"><!--
+                //<![CDATA[
+                switchScheduleToOneDay=function(viewKey,scheduleOneDayDate){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit();},'similarityGroupingId':'cdForm:switchToOneDay','parameters':{'cdForm:switchToOneDay':'cdForm:switchToOneDay','viewKey':viewKey||'horizontal_service_day_list','ajaxSingle':'cdForm:switchToOneDay','scheduleOneDayDate':scheduleOneDayDate||App.getScheduleOneDayDate()} ,'containerId':'cdForm:schedule\x2Dmain\x2Dregion'} )};
+                //]]>
+                //--></script>
+
+
+	<script type="text/javascript"><!--
+
+    smarcoms.special.switchScheduleToOneDay = function (day) {
+        if (Log) Log.info("Switching to One Day: "+day);
+        App.setScheduleOneDayDate(day);
+        App.prepareForUpdate();
+        smarcoms.special.startScheduleWaiting();
+        switchScheduleToOneDay();
+        if (Log) Log.info("Done switching.");
+    };
+
+    smarcoms.special.scrollToTopLeft = function (elementId) {
+        $(elementId).scrollTop = 0;
+        $(elementId).scrollLeft = 0;
+    };
+
+    //--></script><div id="cdForm:scheduleComponent" class="tables"><div class="tbl_horizontal"><table class="schedule" id="schedule_0" cellspacing="0"><caption><span class="group date">Út 15/1</span></caption><tr class="heading"><th class="schedule_table_day_header_cell">Út <span class="header_date_part">15/1</span></th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">6:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">7:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">8:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">9:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">10:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">11:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">12:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">13:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">14:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">15:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">16:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">17:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">18:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">19:00</th><th class="scheduleTimeHeader full_hour_horiz" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">20:00</th><th class="scheduleTimeHeader" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">21:00</th></tr><tr><th class="horizontalRowHeader alignL lh" style="min-width: 100px; min-height:20px;" title="kurt 1"><p>kurt 1</p></th><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_0" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_1" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_2" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_3" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_4" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_5" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_6" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_7" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_8" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_9" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_10" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_11" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_12" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_13" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_0_14" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable " id="sched_0_i_0_15" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td></tr><tr><th class="horizontalRowHeader alignL lh" style="min-width: 100px; min-height:20px;" title="kurt 2"><p>kurt 2</p></th><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_0" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_1" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_2" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_3" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_4" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_5" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_6" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_7" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_8" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_9" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_10" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_11" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_12" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_13" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_1_14" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable " id="sched_0_i_1_15" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td></tr><tr><th class="horizontalRowHeader alignL lh" style="min-width: 100px; min-height:20px;" title="kurt 3"><p>kurt 3</p></th><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_0" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_1" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_2" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_3" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_4" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_5" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_6" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_7" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_8" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_9" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_10" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_11" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_12" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_13" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_2_14" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable " id="sched_0_i_2_15" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td></tr><tr><th class="horizontalRowHeader alignL lh" style="min-width: 100px; min-height:20px;" title="kurt 4"><p>kurt 4</p></th><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_0" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_1" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_2" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_3" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_4" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_5" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_6" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_7" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_8" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_9" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_10" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_11" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_12" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_13" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable full_hour_horiz " id="sched_0_i_3_14" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td><td class="scheduleCell uneditable " id="sched_0_i_3_15" style="width: 57px; height:20px;min-width: 57px; min-height:20px;">&nbsp;</td></tr></table></div><div id="resContainer" style="visibility:hidden;"><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2745496_0"><div class="evContent normal-cursor" style=""></div></div><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2744964_0"><div class="evContent normal-cursor" style=""></div></div><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2745569_0"><div class="evContent normal-cursor" style=""></div></div><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2744943_0"><div class="evContent normal-cursor" style=""></div></div><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2745486_0"><div class="evContent normal-cursor" style=""></div></div><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2745282_0"><div class="evContent normal-cursor" style=""></div></div><div class="event" style="background-color: #0033CC; color: #FFF;" id="evt_0_2745213_0"><div class="evContent normal-cursor" style=""></div></div><div id="schedule-popup-note" style="display:none;"></div></div><script type="text/javascript"><!--
+                var scheduleData = {"binId":"bin_drop","canDragBetweenGridModels":true,"canResizeInSecondaryDirection":true,"clientId":"cdForm:scheduleComponent","deleteReservationFunctionName":"deleteReservation","events":[{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[10,3],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2745496_0","innerEnd":10,"innerStart":10,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2745496},"reservationId":null,"start":[10,2]},{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[11,1],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2744964_0","innerEnd":11,"innerStart":10,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2744964},"reservationId":null,"start":[10,1]},{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[11,3],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2745569_0","innerEnd":11,"innerStart":11,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2745569},"reservationId":null,"start":[11,3]},{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[12,3],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2744943_0","innerEnd":12,"innerStart":12,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2744943},"reservationId":null,"start":[12,3]},{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[12,0],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2745486_0","innerEnd":12,"innerStart":12,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2745486},"reservationId":null,"start":[12,0]},{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[13,2],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2745282_0","innerEnd":13,"innerStart":13,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2745282},"reservationId":null,"start":[13,2]},{"blinded":true,"canDragAndDrop":false,"canDragAndDropBetweenGrids":false,"canEdit":false,"canResizeInMainDirection":false,"canResizeInSecondaryDirection":false,"color":"#0033CC","delayAfter":0,"delayBefore":0,"end":[13,1],"eventId":0,"fontSize":0,"gridId":0,"htmlId":"evt_0_2745213_0","innerEnd":13,"innerStart":13,"kioskMode":false,"newEnd":null,"newGridId":null,"newStart":null,"notes":null,"partial":false,"renderedHtml":null,"reservation":{"id":2745213},"reservationId":null,"start":[13,0]}],"grids":[{"canAddReservation":false,"cellHeight":20,"cellWidth":57,"closed":false,"cols":16,"editReservationFunctionName":"editReservation","emptyCellClickFunctionName":"addReservation","enableDragAndDrop":false,"enableResize":false,"headerCols":[0],"headerRows":[0],"horizHeaderCellHeight":20,"id":0,"isReadOnly":null,"model":{},"rows":4,"tableId":"schedule_0","useFakeDrag":false,"usePastTime":null,"useQuickAdd":false,"vertHeaderCellWidth":100}],"mainDirection":"HORIZONTAL","model":{},"onNeedUpdateScript":"App.prepareForUpdate();smarcoms.special.startScheduleWaiting();;A4J.AJAX.Submit('cdForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){App.reinit(); },'similarityGroupingId':'cdForm:j_id324','parameters':{'cdForm:j_id324':'cdForm:j_id324'} ,'containerId':'cdForm:schedule\\x2Dmain\\x2Dregion'} )","pastTimeData":[[-1,-1,-1,-1]],"updateQuestionPeriod":60,"useNotes":false};
+                //--></script></div><div id="cdForm:scheduleReservations" class="tableForm"></div></div>
+
+				</div>
+
+				</div>
+				</div></span><script id="cdForm:editClassReservationRequest" type="text/javascript"><!--
+    //<![CDATA[
+    editClassReservation=function(editClassReserationId){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){Richfaces.showModalPanel('mp_class_reservation');},'similarityGroupingId':'cdForm:editClassReservationRequest','parameters':{'editClassReserationId':editClassReserationId||App.getReservationClickedData(),'ajaxSingle':'cdForm:editClassReservationRequest','cdForm:editClassReservationRequest':'cdForm:editClassReservationRequest'} } )};
+    //]]>
+    //--></script><script id="cdForm:showSelectSportDialogRequest" type="text/javascript"><!--
+    //<![CDATA[
+    showSelectSportDialog=function(newMultipurposeReservationData){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){smarcoms.util.openModalDialog ('schedule-messages', 'sportPopupModal');App.schedule.cleanMarkedCells();},'similarityGroupingId':'cdForm:showSelectSportDialogRequest','parameters':{'cdForm:showSelectSportDialogRequest':'cdForm:showSelectSportDialogRequest','ajaxSingle':'cdForm:showSelectSportDialogRequest','newMultipurposeReservationData':newMultipurposeReservationData||App.getEmptyCellClickedData()} } )};
+    //]]>
+    //--></script><script id="cdForm:showSelectRelaxTypeDialogRequest" type="text/javascript"><!--
+    //<![CDATA[
+    showSelectRelaxTypeDialog=function(newRelaxReservationData){A4J.AJAX.Submit('cdForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){smarcoms.util.openModalDialog ('schedule-messages', 'relaxPopupModal');App.schedule.cleanMarkedCells();},'similarityGroupingId':'cdForm:showSelectRelaxTypeDialogRequest','parameters':{'cdForm:showSelectRelaxTypeDialogRequest':'cdForm:showSelectRelaxTypeDialogRequest','newRelaxReservationData':newRelaxReservationData||App.getEmptyCellClickedData(),'ajaxSingle':'cdForm:showSelectRelaxTypeDialogRequest'} } )};
+    //]]>
+    //--></script><input type="hidden" autocomplete="off" name="cdForm" value="cdForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="cdForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="cdForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+    function clear_cdForm() {
+        _clearJSFFormParameters('cdForm','',['cdForm:j_idcl','cdForm:_link_hidden_']);
+    }
+    function clearFormHiddenParams_cdForm(){clear_cdForm();}
+    function clearFormHiddenParams_cdForm(){clear_cdForm();}
+    clear_cdForm();
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form><div id="mp_class_reservation" style="display: none;"><input id="mp_class_reservationOpenedState" name="mp_class_reservationOpenedState" type="hidden" /><div class="rich-modalpanel modal-form" id="mp_class_reservationContainer" style="position: absolute; display: none; z-index: 20000; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="mp_class_reservationDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="mp_class_reservationFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="mp_class_reservationCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="mp_class_reservationShadowDiv"></div><div class="  rich-mpnl-content" id="mp_class_reservationContentDiv"><table border="0" cellpadding="0" cellspacing="0" id="mp_class_reservationContentTable" style="width: 700px;height: 1px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="mp_class_reservationHeader" style="white-space: nowrap;"><form id="j_id788" name="j_id788" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div class="form-header-title">Cvičení - Rezervovaná místa</div><a href="#" onclick="var cf = function(){document.getElementById('mp_class_reservation').component.hide();return false;};var oamSF = function(){return oamSubmitForm('j_id788','j_id788:j_id791');};return (cf()==false)? false : oamSF();" class="quick-res-add-close"> </a><input type="hidden" name="j_id788_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="mp_class_reservationScrollDiv" style="position:relative;"><form id="classReservationDetailForm" name="classReservationDetailForm" method="post" action="javascript:A4J.AJAX.SubmitForm('classReservationDetailForm',{'similarityGroupingId':'classReservationDetailForm','parameters':{'ajaxSingle':'classReservationDetailForm','classReservationDetailForm':'classReservationDetailForm'} ,'actionUrl':'/Branch/pages/Schedule.faces'} )"><dl id="classReservationDetailForm:messages" class="rich-messages" style="display: none; "><dt></dt></dl><div class="rich-panel panel-gray" id="classReservationDetailForm:classReservationDetailPanel" style="width:auto;"><div class="rich-panel-header " id="classReservationDetailForm:classReservationDetailPanel_header">Detail</div><div class="rich-panel-body " id="classReservationDetailForm:classReservationDetailPanel_body"><table><tbody><tr><td><label for="classReservationDetailForm:classType">Cvičení</label></td><td><input id="classReservationDetailForm:classType" name="classReservationDetailForm:classType" type="text" value="" readonly="readonly" /></td><td><label for="classReservationDetailForm:humanResource">Instruktor</label></td><td><input id="classReservationDetailForm:humanResource" name="classReservationDetailForm:humanResource" type="text" value="" readonly="readonly" /></td></tr>
+<tr><td><label for="classReservationDetailForm:fromDateTime">Začátek</label></td><td><input id="classReservationDetailForm:fromDateTime" name="classReservationDetailForm:fromDateTime" type="text" value="" readonly="readonly" /></td><td><label for="classReservationDetailForm:toDateTime">Konec</label></td><td><input id="classReservationDetailForm:toDateTime" name="classReservationDetailForm:toDateTime" type="text" value="" readonly="readonly" /></td></tr>
+<tr><td><label for="classReservationDetailForm:freePlaces">Volná místa</label></td><td><input id="classReservationDetailForm:freePlaces" name="classReservationDetailForm:freePlaces" type="text" value="" readonly="readonly" /></td><td><label for="classReservationDetailForm:standByPlaces">Náhradníci</label></td><td><input id="classReservationDetailForm:standByPlaces" name="classReservationDetailForm:standByPlaces" type="text" value="0" readonly="readonly" /></td></tr>
+</tbody></table></div></div><div class="rich-panel panel-gray" id="classReservationDetailForm:classReservationToolsPanel" style="width:auto;"><div class="rich-panel-body " id="classReservationDetailForm:classReservationToolsPanel_body"><a class="print-table" href="#" id="classReservationDetailForm:tablePrintLink" name="classReservationDetailForm:tablePrintLink" onclick="A4J.AJAX.Submit('classReservationDetailForm',event,{'oncomplete':function(request,event,data){window.open('/Branch/pages/PrintableTable.faces', 'printable_table_window', 'width=800,height=600,menubar=yes,resizable=yes,scrollbars=yes'); return false;},'similarityGroupingId':'classReservationDetailForm:tablePrintLink','parameters':{'classReservationDetailForm:tablePrintLink':'classReservationDetailForm:tablePrintLink','classReservationDetailForm:j_id804':'enrollments'} ,'containerId':'classReservationDetailForm:addBtnRegion','actionUrl':'/Branch/pages/Schedule.faces'} );return false;" style="float: right;"><img src="/pages/images/ico_printer.png" alt="print" /></a><input class="button" id="classReservationDetailForm:addButton" name="classReservationDetailForm:addButton" onclick="return false;" value="Přidat" disabled="disabled" type="button" /><input class="button" id="classReservationDetailForm:substituteAddButton" name="classReservationDetailForm:substituteAddButton" onclick="return false;" value="Přidej náhradníka" disabled="disabled" type="button" /><img alt="" class="rich-spacer " height="1" id="classReservationDetailForm:j_id817" src="/a4j/g/3_3_3.Finalimages/spacer.gif.faces" width="10px" /><label id="classReservationDetailForm:enrollmentStatusSelectLabel" for="classReservationDetailForm:enrollmentStatusSelect">Filtr: </label><select id="classReservationDetailForm:enrollmentStatusSelect" name="classReservationDetailForm:enrollmentStatusSelect" size="1" onchange="A4J.AJAX.Submit('classReservationDetailForm',event,{'similarityGroupingId':'classReservationDetailForm:enrollmentStatusSelectSupport','parameters':{'classReservationDetailForm:enrollmentStatusSelectSupport':'classReservationDetailForm:enrollmentStatusSelectSupport'} ,'containerId':'classReservationDetailForm:addBtnRegion','actionUrl':'/Branch/pages/Schedule.faces'} )">	<option value="reservation_filter_status_all_but_canceled" selected="selected">Vše (kromě všech zrušených)</option>	<option value="substitutes_enrolled_enrollments">Vše (kromě zrušených a náhradníků)</option>	<option value="substitutes_substitute_enrollments">Náhradníci</option>	<option value="substitutes_canceled_enrollments">Zrušené</option>	<option value="substitutes_all_enrollments">Všechny</option>	<option value="reservation_status_done">Proběhlá</option></select></div></div><div class="rich-panel panel-gray" id="classReservationDetailForm:j_id806" style="width:auto;"><div class="rich-panel-body " id="classReservationDetailForm:j_id806_body"><div id="classReservationDetailForm:enrollmentsContent" style="float:none;" class="tableForm"><table class="rich-table " id="classReservationDetailForm:enrollments" border="0" cellpadding="0" cellspacing="0" width="100%"><colgroup span="4"></colgroup><thead class="rich-table-thead"><tr class="rich-table-subheader "><th class="rich-table-subheadercell  " scope="col"></th><th class="rich-table-subheadercell  " scope="col">Jméno</th><th class="rich-table-subheadercell  " scope="col" id="classReservationDetailForm:enrollments:statusheader"><div id="classReservationDetailForm:enrollments:statusheader:sortDiv">Stav</div></th><th class="rich-table-subheadercell  " scope="col"></th></tr></thead><tbody id="classReservationDetailForm:enrollments:tb"></tbody></table></div></div></div><div id="classReservationDetailForm:buttons" class="form-buttons"><input class="button" id="classReservationDetailForm:j_id815" name="classReservationDetailForm:j_id815" onclick="Richfaces.componentControl.performOperation(event,'onclick','#mp_class_reservation','hide');A4J.AJAX.Submit('classReservationDetailForm',event,{'similarityGroupingId':'classReservationDetailForm:j_id815','parameters':{'classReservationDetailForm:j_id815':'classReservationDetailForm:j_id815'} ,'actionUrl':'/Branch/pages/Schedule.faces'} );return false;" value="Zavřít" type="button" /></div><input type="hidden" autocomplete="off" name="classReservationDetailForm" value="classReservationDetailForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="classReservationDetailForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="classReservationDetailForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+    function clear_classReservationDetailForm() {
+        _clearJSFFormParameters('classReservationDetailForm','',['classReservationDetailForm:j_idcl','classReservationDetailForm:_link_hidden_']);
+    }
+    function clearFormHiddenParams_classReservationDetailForm(){clear_classReservationDetailForm();}
+    function clearFormHiddenParams_classReservationDetailForm(){clear_classReservationDetailForm();}
+    clear_classReservationDetailForm();
+    //--></script><script type="text/javascript"><!--
+    A4J.setupForm('classReservationDetailForm');
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="mp_class_reservationCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="mp_class_reservationLastHref"></button></div><script type="text/javascript"><!--
+    new SmcModalPanel('mp_class_reservation',
+        {
+            width: -1,
+            height: -1,
+
+            minWidth: 700,
+            minHeight: -1,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "20",
+
+            zindex: 20000,onresize: '',onmove: '',onshow: '',onhide: '',onbeforeshow: '',onbeforehide: '',
+
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: true,
+
+            scrollContent: true,
+            bottomSpace: 20});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div><span id="class_reservation_confirm_dialog"></span><span id="enrollmentReservationConfirmDialog"></span><div id="sportPopupModal" style="display: none;"><input id="sportPopupModalOpenedState" name="sportPopupModalOpenedState" type="hidden" /><div class="rich-modalpanel popup_modal quick-res-add-modal confirm-modal" id="sportPopupModalContainer" style="position: absolute; display: none; z-index: 100; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="sportPopupModalDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="sportPopupModalFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="sportPopupModalCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="sportPopupModalShadowDiv"></div><div class="  rich-mpnl-content" id="sportPopupModalContentDiv"><table border="0" cellpadding="0" cellspacing="0" id="sportPopupModalContentTable" style="width: 400px;height: 165px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header quick-res-add-modal-header" id="sportPopupModalHeader" style="white-space: nowrap;"><form id="j_id849" name="j_id849" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div class="quick-header-title">Vyberte druh služby</div><a href="#" onclick="var cf = function(){document.getElementById('sportPopupModal').component.hide();return false;};var oamSF = function(){return oamSubmitForm('j_id849','j_id849:j_id852');};return (cf()==false)? false : oamSF();" class="quick-res-add-close"> </a><input type="hidden" name="j_id849_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="sportPopupModalScrollDiv" style="position:relative;"><form id="sportSelectForm" name="sportSelectForm" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded" class="multipurpose-select-sport"><dl id="sportSelectForm:messages" class="rich-messages" style="display: none; "><dt></dt></dl><label class="multipurpose-select-sport" for="sportSelectForm:sportSelect">Vyberte druh služby</label>
+<table id="sportSelectForm:sportSelectRadioTable" class="confirm-radio one-radio ">
+<tbody id="sportSelectForm:sportSelectRadioTable:tbody_element"><tr><td></td></tr></tbody></table>
+<div class="confirm-buttons"><input class="submit" id="sportSelectForm:j_id861" name="sportSelectForm:j_id861" onclick="A4J.AJAX.Submit('sportSelectForm',event,{'status':'statusLodaing','oncomplete':function(request,event,data){smarcoms.util.closeModalDialog('sportSelectForm:messages','sportPopupModal');smarcoms.util.openModalDialog('sportSelectForm:messages','mp_reservation');App.schedule.cleanMarkedCells();},'similarityGroupingId':'sportSelectForm:j_id861','parameters':{'sportSelectForm:j_id861':'sportSelectForm:j_id861'} } );return false;" value="Vytvořit" type="submit" /><input class="button" id="sportSelectForm:j_id862" name="sportSelectForm:j_id862" onclick="document.getElementById('sportPopupModal').component.hide();;A4J.AJAX.Submit('sportSelectForm',event,{'status':'statusLoading','similarityGroupingId':'sportSelectForm:j_id862','parameters':{'sportSelectForm:j_id862':'sportSelectForm:j_id862','ajaxSingle':'sportSelectForm:j_id862'} } );return false;" value="Zavřít" type="button" /></div><input type="hidden" name="sportSelectForm_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="sportPopupModalCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="sportPopupModalLastHref"></button></div><script type="text/javascript"><!--
+    new SmcModalPanel('sportPopupModal',
+        {
+            width: 400,
+            height: 165,
+
+            minWidth: -1,
+            minHeight: -1,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "auto",
+
+            zindex: 100,onresize: '',onmove: '',onshow: '',onhide: function(event){App.schedule.cleanMarkedCells();},onbeforeshow: '',onbeforehide: '',
+
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "hide",
+
+            autosized: true,
+
+            scrollContent: true,
+            bottomSpace: 20});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div><div id="relaxPopupModal" style="display: none;"><input id="relaxPopupModalOpenedState" name="relaxPopupModalOpenedState" type="hidden" /><div class="rich-modalpanel popup_modal quick-res-add-modal confirm-modal " id="relaxPopupModalContainer" style="position: absolute; display: none; z-index: 100; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="relaxPopupModalDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="relaxPopupModalFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="relaxPopupModalCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="relaxPopupModalShadowDiv"></div><div class="  rich-mpnl-content" id="relaxPopupModalContentDiv"><table border="0" cellpadding="0" cellspacing="0" id="relaxPopupModalContentTable" style="width: 400px;height: 165px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header quick-res-add-modal-header" id="relaxPopupModalHeader" style="white-space: nowrap;"><form id="j_id864" name="j_id864" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div class="quick-header-title">Vyberte druh služby</div><a href="#" onclick="var cf = function(){document.getElementById('relaxPopupModal').component.hide();return false;};var oamSF = function(){return oamSubmitForm('j_id864','j_id864:j_id867');};return (cf()==false)? false : oamSF();" class="quick-res-add-close"> </a><input type="hidden" name="j_id864_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="relaxPopupModalScrollDiv" style="position:relative;"><form id="relaxSelectForm" name="relaxSelectForm" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded" class="multipurpose-select-sport"><dl id="relaxSelectForm:messages" class="rich-messages" style="display: none; margin-left"><dt></dt></dl><label class="multipurpose-select-sport" for="relaxSelectForm:sportSelect">Vyberte druh služby</label>
+<table id="relaxSelectForm:relaxTypeSelectRadioTable" class="confirm-radio one-radio ">
+<tbody id="relaxSelectForm:relaxTypeSelectRadioTable:tbody_element"><tr><td></td></tr></tbody></table>
+<div class="confirm-buttons"><input class="submit" id="relaxSelectForm:showRelaxReservationAddForm" name="relaxSelectForm:showRelaxReservationAddForm" onclick="A4J.AJAX.Submit('relaxSelectForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){smarcoms.util.closeModalDialog('relaxSelectForm:messages','relaxPopupModal');smarcoms.util.openModalDialog('relaxSelectForm:messages','mp_reservation');App.schedule.cleanMarkedCells();},'similarityGroupingId':'relaxSelectForm:showRelaxReservationAddForm','parameters':{'relaxSelectForm:showRelaxReservationAddForm':'relaxSelectForm:showRelaxReservationAddForm'} } );return false;" value="Vytvořit" type="submit" /><input class="button" id="relaxSelectForm:j_id879" name="relaxSelectForm:j_id879" onclick="document.getElementById('relaxPopupModal').component.hide();;A4J.AJAX.Submit('relaxSelectForm',event,{'status':'statusLoading','similarityGroupingId':'relaxSelectForm:j_id879','parameters':{'ajaxSingle':'relaxSelectForm:j_id879','relaxSelectForm:j_id879':'relaxSelectForm:j_id879'} } );return false;" value="Zavřít" type="button" /></div><input type="hidden" name="relaxSelectForm_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="relaxPopupModalCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="relaxPopupModalLastHref"></button></div><script type="text/javascript"><!--
+    new SmcModalPanel('relaxPopupModal',
+        {
+            width: 400,
+            height: 165,
+
+            minWidth: -1,
+            minHeight: -1,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "auto",
+
+            zindex: 100,onresize: '',onmove: '',onshow: function(event){try { var scrollDiv = document.getElementById('relaxPopupModalScrollDiv');  scrollDiv.style.width= (scrollDiv.parentNode.offsetWidth +  'px');} catch(e) {};},onhide: function(event){App.schedule.cleanMarkedCells();},onbeforeshow: '',onbeforehide: '',
+
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "hide",
+
+            autosized: true,
+
+            scrollContent: true,
+            bottomSpace: 20});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div></span><span id="gym_reservation_confirm_dialog"></span>
+
+    <script type="text/javascript"><!--
+
+    function gymHandleReservationUserSearchPanelToggle(/*boolean*/open) {
+        $('gymResForm:userSearchField').value='';
+        TogglePanelManager.toggleOnClient('gymResForm:reservation_user_add_panel','closed');
+        if (open === true) {
+            TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel','opened');
+        } else {
+            TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel','closed');
+        }
+    }
+
+    function handleReservationUserAddToggle() {
+        TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel', 'closed');
+    }
+
+    function gymHandleModalOnshow() {
+        smarcoms.util.setFocusOnId('gymResForm:userSearchField');
+
+        var userSearchPanelData = $F($('gymResForm:userSearchPanelData')) === 'true';
+        gymHandleReservationUserSearchPanelToggle(userSearchPanelData);
+    }
+
+    function gymHandleModalOnHide() {
+        $('cdForm:userSearchField').setValue('');
+        smarcoms.util.setFocusOnId('cdForm:userSearchField');
+    }
+
+    //--></script><div id="mp_gym_reservation" style="display: none;"><input id="mp_gym_reservationOpenedState" name="mp_gym_reservationOpenedState" type="hidden" /><div class="rich-modalpanel " id="mp_gym_reservationContainer" style="position: absolute; display: none; z-index: 20000; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="mp_gym_reservationDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="mp_gym_reservationFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="mp_gym_reservationCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="mp_gym_reservationShadowDiv"></div><div class="  rich-mpnl-content" id="mp_gym_reservationContentDiv"><div class="rich-mpnl-text rich-mpnl-controls ">
+        <a href="#" class="quick-res-add-close" onclick="document.getElementById('mp_gym_reservation').component.hide();"></a></div><table border="0" cellpadding="0" cellspacing="0" id="mp_gym_reservationContentTable" style="width: 625px;height: 1px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="mp_gym_reservationHeader" style="white-space: nowrap;"><div class="form-header-title">Návštěva</div></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="mp_gym_reservationScrollDiv" style="position:relative;"><table><tbody><tr><td><form id="gymResForm" name="gymResForm" method="post" class="modal-form" action="/Branch/pages/Schedule.faces"><div id="gymResForm:currentUserUnderwayReservations" class="gymCurrentUserUnderwayReservations"><table class="rich-table " id="gymResForm:userGymReservations" style="width: 100%; display:none" border="0" cellpadding="0" cellspacing="0"><colgroup span="3"></colgroup><thead class="rich-table-thead"><tr class="rich-table-header  "><th class="rich-table-headercell  " colspan="3" scope="colgroup">Právě probíhající návštěvy vybraného zákazníka</th></tr><tr class="rich-table-subheader "><th class="rich-table-subheadercell  " scope="col" id="gymResForm:userGymReservations:timefromheader"><div id="gymResForm:userGymReservations:timefromheader:sortDiv">Příchod</div></th><th class="rich-table-subheadercell  " scope="col" id="gymResForm:userGymReservations:lengthheader"><div id="gymResForm:userGymReservations:lengthheader:sortDiv">Délka</div></th><th class="rich-table-subheadercell  " scope="col" id="gymResForm:userGymReservations:toolsheader"><div id="gymResForm:userGymReservations:toolsheader:sortDiv"></div></th></tr></thead><tfoot><tr class="rich-table-footer  "><td class="rich-table-footercell  " colspan="3" scope="colgroup"><div class="rich-datascr " id="gymResForm:userGymReservations:j_id402" style=" ; display: none" align="center"><script type="text/javascript"><!--
+    new Richfaces.Datascroller('gymResForm:userGymReservations:j_id402', function(event){A4J.AJAX.Submit('gymResForm',event,{'ignoreDupResponses':true,'implicitEventsQueue':'gymResForm:userGymReservations:j_id402','status':'statusLoading','similarityGroupingId':'gymResForm:userGymReservations:j_id402','parameters':{'gymResForm:userGymReservations:j_id402':event.memo.page,'ajaxSingle':'gymResForm:userGymReservations:j_id402'} ,'containerId':'gymResForm:j_id400'} ); return false;});
+    //--></script></div></td></tr></tfoot><tbody id="gymResForm:userGymReservations:tb"></tbody></table></div><dl id="gymResForm:messages" class="rich-messages" style="display: none; "><dt></dt></dl><script id="gymResForm:j_id408" type="text/javascript"><!--
+    //<![CDATA[
+    gymEditSelectUserFromSuggest=function(){A4J.AJAX.Submit('gymResForm',null,{'status':'statusLoading','oncomplete':function(request,event,data){if (smarcoms.leftPanel.isOpened('gymResForm:userSearchPanel')) { TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel');}},'similarityGroupingId':'gymResForm:j_id408','parameters':{'gymResForm:j_id408':'gymResForm:j_id408'} } )};
+    //]]>
+    //--></script><span id="gymResForm:user_search_and_data"><input type="hidden" id="gymResForm:selectUsrId" name="gymResForm:selectUsrId" value="" /><div class="res-usr-search-box"><input id="gymResForm:userSearchField" name="gymResForm:userSearchField" type="text" value="" onkeypress="return smarcoms.form.fireClickOnEnterPressed(event, 'gymResForm:reservation_user_search_button');" /><div id="gymResForm:res_suggestion" class="rich-sb-common-container  " style="display:none; z-index: 30001;width:300px;height:150px;;;"><div class="rich-sb-ext-decor-1"><div class="rich-sb-ext-decor-2" style=";; border-width: null  null  null  null ;"><table border="0" cellpadding="0" cellspacing="1" class="rich-sb-ext-decor-3"><tbody><tr><td><div class="_suggestion_size_ rich-sb-overflow" style="width:296px;height:146px;"><table width="100%" id="gymResForm:res_suggestion:suggest" border="0"><tbody><tr style="display:none;"><td></td></tr></tbody></table></div></td></tr></tbody></table></div></div><div class="rich-sb-shadow" style="opacity:0.0; filter:alpha(opacity=0);top: 0px; left: 0px; "></div></div><div id="gymResForm:res_suggestion_script" style="display:none;"><script type="text/javascript"><!--
+    Richfaces.onAvailable('gymResForm:userSearchField', function() { new RichFaces.Suggestion('gymResForm','gymResForm:userSearchField','gymResForm:res_suggestion',{'minChars':'2','height':'150','onselect':function(suggestion,event){gymEditSelectUserFromSuggest()},'implicitEventsQueue':'gymResForm:res_suggestion','usingSuggestObjects':true,'width':'300','similarityGroupingId':'gymResForm:res_suggestion','parameters':{'gymResForm:res_suggestion':'gymResForm:res_suggestion'} ,'containerId':'gymResForm:reservation_user_basic_controls_region','onobjectchange':function(suggestion,event){smarcoms.util.handleSuggestionValue(suggestion.selectedItems, 'gymResForm:selectUsrId', 'value');},'zindex':30000,'requestDelay':500} );
+    });
+    //--></script></div><iframe src="/a4j/g/3_3_3.Finalorg/richfaces/renderkit/html/images/spacer.gif.faces" id="gymResForm:res_suggestion_iframe" style="position:absolute;display:none;z-index:30000;"></iframe><input type="hidden" autocomplete="off" id="gymResForm:res_suggestion_selection" name="gymResForm:res_suggestion_selection" /><input class="res-usr-srch-button button" id="gymResForm:reservation_user_search_button" name="gymResForm:reservation_user_search_button" onclick="A4J.AJAX.Submit('gymResForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){handleReservationUserSearchPanelToggle(data);},'similarityGroupingId':'gymResForm:reservation_user_search_button','parameters':{'gymResForm:reservation_user_search_button':'gymResForm:reservation_user_search_button'} ,'containerId':'gymResForm:reservation_user_basic_controls_region'} );return false;" value="Hledat" type="button" /></div><div class="res-usr-top-btn-srch"><a class="rich-tglctrl reservation-user-search-link" href="#" id="gymResForm:j_id415" onclick="TogglePanelManager.toggleOnClient('gymResForm:reservation_user_add_panel', 'closed');TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel',null);; return false;">Rozšířené vyhledávání</a></div><div class="rich-panel reservation-user-data" id="gymResForm:reservation_user_data"><div class="rich-panel-body " id="gymResForm:reservation_user_data_body"><input type="hidden" id="gymResForm:userSearchPanelData" name="gymResForm:userSearchPanelData" value="false" /><div class="rich-toggle-panel reservation-user-search-ext" id="gymResForm:userSearchPanel"><div id="gymResForm:userSearchPanel_closed" style="display: inherit">
+							<div style="display:none;line-height:0px;"> </div></div><div id="gymResForm:userSearchPanel_opened" style="display: none"><div id="gymResForm:rese_search_tgl_open_facet_container"><div class="rich-panel " id="gymResForm:j_id420"><div class="rich-panel-header " id="gymResForm:j_id420_header"><span style="float:left;background-color:#2e6096;">Rozšířené vyhledávání</span><a class="rich-tglctrl " href="#" id="gymResForm:j_id423" onclick="TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel',null);; return false;" style=" float:right; display:block;"><img src="/pages/images/minimize.png" alt="min" style="cursor:pointer;" /></a>
+										<div style="clear:both;"></div></div><div class="rich-panel-body " id="gymResForm:j_id420_body"><table class="reservation-form-user-search-left"><tbody><tr><td><label for="gymResForm:searchSurname">Příjmení</label></td><td><input id="gymResForm:searchSurname" name="gymResForm:searchSurname" type="text" value="" /></td></tr>
+<tr><td><label for="gymResForm:searchPhone">Telefon</label></td><td><input id="gymResForm:searchPhone" name="gymResForm:searchPhone" type="text" value="" /></td></tr>
+</tbody></table><table class="reservation-form-user-search-right"><tbody><tr><td><label for="gymResForm:searchEmail">Email</label></td><td><input id="gymResForm:searchEmail" name="gymResForm:searchEmail" type="text" value="" /></td></tr>
+<tr><td><label for="gymResForm:searchRole">Role</label></td><td><select name="gymResForm:j_id432" size="1">	<option value="-1">Všechny role</option>	<option value="3">Zákazník</option></select></td></tr>
+</tbody></table>
+								<div class="cleaner"> </div><input class="submit" id="gymResForm:j_id436" name="gymResForm:j_id436" onclick="$('gymResForm:userSearchField').value='';;A4J.AJAX.Submit('gymResForm',event,{'status':'statusLoading','oncomplete':function(request,event,data){if (data == false) TogglePanelManager.toggleOnClient('gymResForm:userSearchPanel',null);},'similarityGroupingId':'gymResForm:j_id436','parameters':{'gymResForm:j_id436':'gymResForm:j_id436'} ,'containerId':'gymResForm:reservation_user_search_region'} );return false;" value="Hledat" type="button" />
+								<div class="cleaner"> </div></div></div></div></div><div style="display: none;"><input type="hidden" autocomplete="off" id="gymResForm:userSearchPanel_input" name="gymResForm:userSearchPanel" value="closed" /></div><script type="text/javascript">TogglePanelManager.add(new TogglePanel("gymResForm:userSearchPanel", $A(["closed", "opened"]), "closed"));</script></div><table class="reservation-user-personal-grid"><tbody><tr><td><label class="required" for="gymResForm:anonUsername">Jméno</label></td><td><input id="gymResForm:anonUsername" name="gymResForm:anonUsername" type="text" value="" autocomplete="off" /></td><td><label for="gymResForm:anonMobile">Telefon</label></td><td><input id="gymResForm:anonMobile" name="gymResForm:anonMobile" type="text" value="" autocomplete="off" /></td><td><label for="gymResForm:anonEmail">E-mail</label></td><td><input id="gymResForm:anonEmail" name="gymResForm:anonEmail" type="text" value="" autocomplete="off" /></td></tr>
+</tbody></table></div></div></span><div class="rich-panel panel-gray reservation-detail-panel gym" id="gymResForm:detailPanel"><div class="rich-panel-body " id="gymResForm:detailPanel_body"><div id="gymResForm:reservation_time_data" class="gym-reservation-time-data">Příchod: <span class="text-field"></span><span style="margin-left: 1em;">Délka: </span><span class="text-field">0 minut</span></div><div id="gymResForm:basic_others" class="gray-line-top"><label class="res-note-label" for="gymResForm:note">Poznámka</label><textarea name="gymResForm:note" id="gymResForm:note" class="res-note-area"></textarea></div></div></div><div id="gymResForm:buttons" class="form-buttons"><input class="button" id="gymResForm:j_id480" name="gymResForm:j_id480" onclick="A4J.AJAX.Submit('gymResForm',event,{'status':'statusSaving','oncomplete':function(request,event,data){smarcoms.util.closeModalDialog('gymResForm:messages', 'mp_gym_reservation');},'similarityGroupingId':'gymResForm:j_id480','parameters':{'gymResForm:j_id480':'gymResForm:j_id480'} } );return false;" value="Uložit" type="submit" /><a class="command" href="#" id="gymResForm:resourceHideButton" name="gymResForm:resourceHideButton" onclick="Richfaces.componentControl.performOperation(event,'onclick','#mp_gym_reservation','hide');A4J.AJAX.Submit('gymResForm',event,{'similarityGroupingId':'gymResForm:resourceHideButton','parameters':{'gymResForm:resourceHideButton':'gymResForm:resourceHideButton'} } );return false;">Zavřít</a></div><input type="hidden" autocomplete="off" name="gymResForm" value="gymResForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="gymResForm:_link_hidden_" value="" /><input type="hidden" autocomplete="off" name="gymResForm:j_idcl" value="" /><script type="text/javascript"><!--
+    function clear_gymResForm() {
+        _clearJSFFormParameters('gymResForm','',['gymResForm:_link_hidden_','gymResForm:j_idcl']);
+    }
+    function clearFormHiddenParams_gymResForm(){clear_gymResForm();}
+    function clearFormHiddenParams_gymResForm(){clear_gymResForm();}
+    clear_gymResForm();
+    //--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></td></tr>
+    </tbody></table></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="mp_gym_reservationCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="mp_gym_reservationLastHref"></button></div><script type="text/javascript"><!--
+    new SmcModalPanel('mp_gym_reservation',
+        {
+            width: 625,
+            height: -1,
+
+            minWidth: 625,
+            minHeight: -1,
+
+            resizeable: false,
+            moveable: false,
+
+            left: "auto",
+            top: "20",
+
+            zindex: 20000,onresize: '',onmove: '',onshow: function(event){gymHandleModalOnshow()},onhide: function(event){gymHandleModalOnHide()},onbeforeshow: '',onbeforehide: '',
+
+            keepVisualState: false,
+            showWhenRendered: false,
+            selectBehavior: "disable",
+
+            autosized: true,
+
+            scrollContent: true,
+            bottomSpace: 10});
+    //--></script></div><script type="text/javascript"><!--
+
+    //--></script></div><span id="coreModals"></span>
+</div>
+
+<div id="footer"><span id="branch-info">Sportovní centrum Olšanka  ▪  Telefon: +420267092448  ▪  Mobilní telefon: +420606658899  ▪  Táboritská 23/1000, Praha 3 - Žižkov, PSČ: 13000,
+			  ▪
+			<a href="mailto:Sport.Recepce@hotelolsanka.cz">Sport.Recepce@hotelolsanka.cz
+			</a>
+			  ▪
+			<a href="http://www.hotelolsanka.cz/sport">http://www.hotelolsanka.cz/sport
+			</a></span><span id="branch-info2">
+                <a href="/Branch/Menu.mobile?enableAutodetect=1">Mobilní verze </a>
+                  ▪  <form id="j_id501" name="j_id501" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded" style="display: inline;"><a href="#" onclick="return oamSubmitForm('j_id501','j_id501:j_id502');">Ochrana soukromí</a><input type="hidden" name="j_id501_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form>
+			  ▪
+			<a href="http://www.e-rezervace.cz">Bizzy - rezervační systém</a></span>
+</div><div id="user_select_modal" style="display: none;"><input id="user_select_modalOpenedState" name="user_select_modalOpenedState" type="hidden" /><div class="rich-modalpanel modal-form" id="user_select_modalContainer" style="position: absolute; display: none; z-index: 20000; background-color: inherit;"><div class="rich-mpnl-mask-div-opaque rich-mpnl-mask-div" id="user_select_modalDiv" style="z-index: 1;"><button class="rich-mpnl-button" id="user_select_modalFirstHref"></button></div><div class="rich-mpnl-panel"><div class="rich-mp-container" id="user_select_modalCDiv" style="position: absolute; left: 0px; top: 0px; z-index: 9;"><div class="rich-mpnl-shadow" id="user_select_modalShadowDiv"></div><div class="  rich-mpnl-content" id="user_select_modalContentDiv"><div class="rich-mpnl-text rich-mpnl-controls ">
+    <a href="#" class="quick-res-add-close" onclick="document.getElementById('user_select_modal').component.hide();return false;"></a></div><table border="0" cellpadding="0" cellspacing="0" id="user_select_modalContentTable" style="width: 300px;height: 1px;"><tr style="height: 1%;"><td class="rich-mpnl-header-cell"><div class="rich-mpnl-text rich-mpnl-header " id="user_select_modalHeader" style="white-space: nowrap;"><form id="j_id772" name="j_id772" method="post" action="/Branch/pages/Schedule.faces" enctype="application/x-www-form-urlencoded"><div class="form-header-title">Výběr uživatele</div><input type="hidden" name="j_id772_SUBMIT" value="1" /><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr><tr style="height: 99%"><td class="rich-mpnl-body" valign="top"><div class="dr-mpnl-pnl-b-scroll rich-mpnl-body-scroll" id="user_select_modalScrollDiv" style="position:relative;">
+
+    <script type="text/javascript"><!--
+
+    function userSelectModalSelectFromSuggest() {
+        selectedId = $('userSelectForm:selectedId').value;
+        //alert(selectedId);
+        smarcoms.util.UserSelect.onSelected(selectedId);
+    }
+
+    //--></script><form id="userSelectForm" name="userSelectForm" method="post" action="/Branch/pages/Schedule.faces"><label for="userSelectForm:searchField">Vyhledávání: </label><input id="userSelectForm:searchField" name="userSelectForm:searchField" type="text" value="" onkeypress="if (smarcoms.form.isEnterPressed(event)) { return false; }" /><input type="hidden" id="userSelectForm:selectedId" name="userSelectForm:selectedId" value="" /><div id="userSelectForm:suggestionBox" class="rich-sb-common-container  " style="display:none; z-index: 30001;width:300px;height:150px;;;"><div class="rich-sb-ext-decor-1"><div class="rich-sb-ext-decor-2" style=";; border-width: null  null  null  null ;"><table border="0" cellpadding="0" cellspacing="1" class="rich-sb-ext-decor-3"><tbody><tr><td><div class="_suggestion_size_ rich-sb-overflow" style="width:296px;height:146px;"><table width="100%" id="userSelectForm:suggestionBox:suggest" border="0"><tbody><tr style="display:none;"><td></td></tr></tbody></table></div></td></tr></tbody></table></div></div><div class="rich-sb-shadow" style="opacity:0.0; filter:alpha(opacity=0);top: 0px; left: 0px; "></div></div><div id="userSelectForm:suggestionBox_script" style="display:none;"><script type="text/javascript"><!--
+Richfaces.onAvailable('userSelectForm:searchField', function() { new RichFaces.Suggestion('userSelectForm','userSelectForm:searchField','userSelectForm:suggestionBox',{'minChars':'2','height':'150','onselect':function(suggestion,event){userSelectModalSelectFromSuggest()},'implicitEventsQueue':'userSelectForm:suggestionBox','usingSuggestObjects':true,'width':'300','similarityGroupingId':'userSelectForm:suggestionBox','parameters':{'userSelectForm:suggestionBox':'userSelectForm:suggestionBox','ajaxSingle':'userSelectForm:suggestionBox'} ,'onobjectchange':function(suggestion,event){smarcoms.util.handleSuggestionValue(suggestion.selectedItems, 'userSelectForm:selectedId', 'value');},'zindex':30000} );
+});
+//--></script></div><iframe src="/a4j/g/3_3_3.Finalorg/richfaces/renderkit/html/images/spacer.gif.faces" id="userSelectForm:suggestionBox_iframe" style="position:absolute;display:none;z-index:30000;"></iframe><input type="hidden" autocomplete="off" id="userSelectForm:suggestionBox_selection" name="userSelectForm:suggestionBox_selection" /><input type="hidden" autocomplete="off" name="userSelectForm" value="userSelectForm" /><input type="hidden" autocomplete="off" name="autoScroll" value="" /><input type="hidden" autocomplete="off" name="userSelectForm:j_idcl" value="" /><input type="hidden" autocomplete="off" name="userSelectForm:_link_hidden_" value="" /><script type="text/javascript"><!--
+function clear_userSelectForm() {
+    _clearJSFFormParameters('userSelectForm','',['userSelectForm:j_idcl','userSelectForm:_link_hidden_']);
+}
+function clearFormHiddenParams_userSelectForm(){clear_userSelectForm();}
+function clearFormHiddenParams_userSelectForm(){clear_userSelectForm();}
+clear_userSelectForm();
+//--></script><input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAN0AAVqX2lkMnB0ABQvcGFnZXMvU2NoZWR1bGUuanNweA==" /></form></div></td></tr></table></div></div></div><div class="rich-mpnl-mask-div rich-mpnl-mask-div-transparent" id="user_select_modalCursorDiv" style="z-index: -200;"><button class="rich-mpnl-button" id="user_select_modalLastHref"></button></div><script type="text/javascript"><!--
+new SmcModalPanel('user_select_modal',
+    {
+        width: 300,
+        height: -1,
+
+        minWidth: 200,
+        minHeight: -1,
+
+        resizeable: false,
+        moveable: false,
+
+        left: "auto",
+        top: "100",
+
+        zindex: 20000,onresize: '',onmove: '',onshow: function(event){smarcoms.util.setFocusOnId('userSelectForm:searchField');},onhide: '',onbeforeshow: function(event){$('userSelectForm:searchField').value=''; $('userSelectForm:selectedId').value=''; },onbeforehide: '',
+
+        keepVisualState: false,
+        showWhenRendered: false,
+        selectBehavior: "disable",
+
+        autosized: true,
+
+        scrollContent: true,
+        bottomSpace: 20});
+//--></script></div><script type="text/javascript"><!--
+
+//--></script></div>
+<script type="text/javascript"><!--
+
+var App = null; //globalni instance aplikace
+/* radsi na onload, at mame jistotu ze je vse nahrano
+* dom:loaded je pri nahrani dom stromu, window.onload je az po nacteni vsechn obrazku atd.
+NOTE dom:loaded nejede v ie8 (ani v kompatibilite) takze vraceno na load
+*/
+try {
+    Event.observe(window, 'load', function() {
+        App = new smarcoms.Application();
+    });
+} catch (em) {
+    if (window.console && console.error) console.error(em.message);
+}
+
+//--></script><script><!--
+
+
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-7241744-28']);
+_gaq.push(['_setDomainName', '.e-rezervace.cz']);
+_gaq.push(['_setCustomVar', 1, 'user_type','role_type_anonymous', 3]);
+_gaq.push(['_setCustomVar', 2, 'web_version', 'desktop', 3]);
+_gaq.push(['_trackPageview']);
+
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+//--></script></body></html>

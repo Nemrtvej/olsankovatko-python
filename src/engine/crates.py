@@ -1,27 +1,23 @@
-from typing import Type, List
+from typing import Type, List, Union
 from datetime import time, date
 
-class Court:
+TypeCourt = Union[Type['Court'], 'Court']
+TypeSlot = Union[Type['Slot'], 'Slot']
+TypeDay = Union[Type['Day'], 'Day']
+
+class Court(object):
 
     def __init__(self, identifier: str, is_empty: bool):
-        self.identifier = identifier
-        self.is_empty = is_empty
+        self._identifier = identifier
+        self._is_empty = is_empty
 
     @property
     def identifier(self) -> str:
-        return self.identifier
+        return self._identifier
 
     @property
     def is_empty(self) -> bool:
-        return self.is_empty
-
-    @identifier.setter
-    def identifier(self, value):
-        self._identifier = value
-
-    @is_empty.setter
-    def is_empty(self, value):
-        self._is_empty = value
+        return self._is_empty
 
     def __repr__(self) -> str:
         return "ID: %s. Is empty: %s" % (self.identifier, self.is_empty)
@@ -29,13 +25,13 @@ class Court:
 class Slot:
 
     def __init__(self, time_from: time):
-        self.courts = list()
+        self.courts = list() # type: List[TypeCourt]
         self.time_from = time_from
 
-    def add_court(self, court: Type[Court]) -> None:
+    def add_court(self, court: TypeCourt) -> None:
         self.courts.append(court)
 
-    def get_courts(self) -> List[Court]:
+    def get_courts(self) -> List[TypeCourt]:
         return self.courts
 
     def get_time_from(self) -> time:
@@ -50,12 +46,12 @@ class Day:
 
     def __init__(self, day: date):
         self.day = day
-        self.slots = list()
+        self.slots = list() # type: List[TypeSlot]
 
-    def add_slot(self, slot: Type[Slot]) -> None:
+    def add_slot(self, slot: TypeSlot) -> None:
         self.slots.append(slot)
 
-    def get_slots(self) -> List[Slot]:
+    def get_slots(self) -> List[TypeSlot]:
         return self.slots
 
     def get_day(self) -> date:
@@ -69,11 +65,21 @@ class Schedule:
     def __init__(self):
         self.days = list()
 
-    def add_day(self, day: Type[Day]):
+    def add_day(self, day: TypeDay):
         self.days.append(day)
 
-    def get_days(self) -> List[Day]:
+    def get_days(self) -> List[TypeDay]:
         return self.days
 
     def __repr__(self) -> str:
         return "Days: %s." % (self.get_days())
+
+
+if __name__ == '__main__':
+    s = Schedule()
+    d1 = Day(date(2018, 1, 1))
+    s.add_day(d1)
+    s1 = Slot(time(12, 0))
+    d1.add_slot(s1)
+    c1 = Court('kurt 1', True)
+    s1.add_court(c1)
