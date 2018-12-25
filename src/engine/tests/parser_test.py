@@ -5,6 +5,7 @@ from ..crates import Schedule, Day, Court, Slot
 from ..parser import Parser
 
 from datetime import date, time
+from time import time as c_time
 
 class ParserTestCase(TestCase):
 
@@ -162,3 +163,26 @@ class ParserTestCase(TestCase):
         for (expected_value, entered_value) in values:
             parsed_date = parser.parse_day_date(entered_value, reference_date=reference_date)
             self.assertEqual(expected_value, f"{parsed_date:%Y-%m-%d}")
+
+    def test_generate_matrix(self):
+        parser = Parser()
+        actual_response = parser.generate_matrix(60, 180, 60, ['a', 'b', 'c'])
+        expected_response = {
+            'a': {
+                60: False,
+                120: False,
+                180: False,
+            },
+            'b': {
+                60: False,
+                120: False,
+                180: False,
+            },
+            'c': {
+                60: False,
+                120: False,
+                180: False,
+            },
+        }
+
+        self.assertEqual(expected_response, actual_response)

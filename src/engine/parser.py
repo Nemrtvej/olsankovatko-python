@@ -3,6 +3,9 @@ from .exceptions import InputException
 from .crates import Schedule, Day
 from bs4 import BeautifulSoup, Tag
 from datetime import date, datetime
+from typing import List, Dict
+
+TimeMatrix = Dict[str, Dict[int, bool]]
 
 class Parser:
 
@@ -25,6 +28,55 @@ class Parser:
             print(row)
 
         return schedule
+
+    def generate_matrix(self, first_slot_time: int, last_slot_time: int, slot_length: int, court_ids: List[str]) -> TimeMatrix:
+        """
+        Return matrix representing states of slots in various times.
+        First index is ID of court
+        Second index is time of slot in number of minutes from the midnight.
+
+        E.g. generating matrix for 60 minutes slots from 06:00 to 21:00, following input params shall be given:
+            first_slot_time = 360
+            last_slot_time = 1260
+            slot_lenght = 60
+            ['court 1', 'court 2', 'court 3']
+
+        Response shall contain following data:
+          {
+            'court 1': {
+                360: False, # State of court 1 at 6 o'clock
+                420: False, # State of court 1 at 7 o'clock
+                460: False, # State of court 1 at 8 o'clock
+                ...
+            },
+            'court 2': {
+                360: False, # State of court 2 at 6 o'clock
+                420: False, # State of court 2 at 7 o'clock
+                460: False, # State of court 2 at 8 o'clock
+                ...
+            },
+          }
+
+        :param first_slot_time: Time in minutes in which the first slot starts.
+        :param last_slot_time:  Time in minutes in which the last slot ends.
+        :param slot_length: Time in minutes how long does the slot takes.
+        :param court_ids:
+        :return: TimeMatrix
+        """
+        duration = last_slot_time - first_slot_time
+        number_of_slots = int(duration / slot_length) + 1
+
+        result = dict()
+
+        for court_id in court_ids:
+            result[court_id] = dict()
+            for i in range(0, number_of_slots):
+                index = first_slot_time + (i * slot_length)
+                result[court_id][index] = False
+
+        return result
+
+
 
     @staticmethod
     def extract_date_string(table_tag: Type[Tag]) -> str:
