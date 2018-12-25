@@ -1,17 +1,42 @@
 from typing import Type
 from .exceptions import InputException
-from .crates import Schedule, Day
+from .crates import Schedule, Day, TypeSlot, Slot, Court
 from bs4 import BeautifulSoup, Tag
-from datetime import date, datetime
+from datetime import date, datetime, time
 from typing import List, Dict
+import re
+import json
 
 TimeMatrix = Dict[str, Dict[int, bool]]
 
 class Parser:
 
+
     def parse_schedule(self, html_page: str) -> Schedule:
+
+        courts = ['kurt 1', 'kurt 2', 'kurt 3', 'kurt 4']
+        first_slot_time = 360
+        last_slot_time = 1260
+        slot_length = 60
+        matrix = self.generate_matrix(first_slot_time=first_slot_time, last_slot_time=last_slot_time, slot_length=slot_length, court_ids=courts)
+
         schedule = Schedule()
         soup = BeautifulSoup(html_page, 'html.parser')
+
+        schedule_data = self.get_schedule_data(html_page)
+        processed_schedule_data = json.loads(schedule_data)
+        processed_events = list(map(lambda event: {
+            "event_id": event.get("htmlId"),
+            "start": event.get('start'),
+            "end": event.get('end')
+        }, processed_schedule_data.get('events')))
+
+        for processed_event in processed_events:
+            for expanded_entry in self.expand_entries(processed_event.get('start'), processed_event.get('end'), processed_event.get('event_id')):
+                court_id = courts[expanded_entry.get('court')]
+                slot_id = first_slot_time + (slot_length * expanded_entry.get('time'))
+                event_id = expanded_entry.get('event_id')
+                matrix.get(court_id).update({slot_id: True})
 
         tables = soup.find_all('table', { "class": "schedule"})
 
@@ -24,12 +49,13 @@ class Parser:
         day = Day(self.parse_day_date(date_string))
         schedule.add_day(day)
 
-        for row in schedule_table.find_all('tr'):
-            print(row)
+        for slot in self.generate_slots_from_matrix(matrix, slot_length):
+            day.add_slot(slot)
 
         return schedule
 
-    def generate_matrix(self, first_slot_time: int, last_slot_time: int, slot_length: int, court_ids: List[str]) -> TimeMatrix:
+    @staticmethod
+    def generate_matrix(first_slot_time: int, last_slot_time: int, slot_length: int, court_ids: List[str]) -> TimeMatrix:
         """
         Return matrix representing states of slots in various times.
         First index is ID of court
@@ -99,3 +125,42 @@ class Parser:
             probable_date = date(current_year + 1, int(entry_month), int(entry_day))
 
         return probable_date
+
+    @staticmethod
+    def get_schedule_data(html_page: str) -> str:
+        pattern = re.compile('^var scheduleData = (.*);$')
+        for line in html_page.split("\n"):
+            result = pattern.match(line.strip())
+            if result is not None:
+                return result.group(1)
+
+    def expand_entries(self, start: List[int], end: List[int], event_id: str):
+        result = list()
+
+        start_time = start[0]
+        start_court = start[1]
+        end_time = end[0]
+        end_court = end[1]
+
+        for time in range(start_time, end_time + 1):
+            for court in range(start_court, end_court + 1):
+                result.append({
+                    'court': court,
+                    'time': time,
+                    'event_id': event_id,
+                })
+
+        return result
+
+    def generate_slots_from_matrix(self, matrix: TimeMatrix, slot_length: int) -> List[TypeSlot]:
+        slots_by_time = {} # type: Dict[int, TypeSlot]
+
+        for court_name, time_entries in enumerate(matrix):
+            for slot_start, is_occupied in enumerate(time_entries):
+                court = Court(court_name, not is_occupied)
+                if slots_by_time.get(time) is None:
+                    new_slot = Slot(time(int(slot_start / slot_length), slot_start % slot_length))
+                    slots_by_time.update({slot_start: new_slot})
+                slots_by_time.get(slot_start).add_court(court)
+
+        return list(slots_by_time.values())

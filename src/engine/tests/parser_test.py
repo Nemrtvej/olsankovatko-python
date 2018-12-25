@@ -5,7 +5,6 @@ from ..crates import Schedule, Day, Court, Slot
 from ..parser import Parser
 
 from datetime import date, time
-from time import time as c_time
 
 class ParserTestCase(TestCase):
 
@@ -18,7 +17,7 @@ class ParserTestCase(TestCase):
         actual_schedule = parser.parse_schedule(data)
 
         expected_schedule = Schedule()
-        day = Day(date(2018, 1, 15))
+        day = Day(date(2019, 1, 15))
         expected_schedule.add_day(day)
 
         slot_06 = Slot(time_from=time(6))
@@ -120,7 +119,7 @@ class ParserTestCase(TestCase):
 
         slot_20.add_court(Court(court1_id, True))
         slot_20.add_court(Court(court2_id, True))
-        slot_20.add_court(Court(court3_id, True))
+        slot_20.add_court(Court(court3_id, False))
         slot_20.add_court(Court(court4_id, True))
 
         slot_21.add_court(Court(court1_id, True))
