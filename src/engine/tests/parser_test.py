@@ -57,11 +57,6 @@ class ParserTestCase(TestCase):
         slot_08.add_court(Court(court3_id, True))
         slot_08.add_court(Court(court4_id, True))
 
-        slot_08.add_court(Court(court1_id, True))
-        slot_08.add_court(Court(court2_id, True))
-        slot_08.add_court(Court(court3_id, True))
-        slot_08.add_court(Court(court4_id, True))
-
         slot_09.add_court(Court(court1_id, True))
         slot_09.add_court(Court(court2_id, True))
         slot_09.add_court(Court(court3_id, True))
@@ -102,10 +97,10 @@ class ParserTestCase(TestCase):
         slot_16.add_court(Court(court3_id, False))
         slot_16.add_court(Court(court4_id, False))
 
-        slot_17.add_court(Court(court1_id, False))
-        slot_17.add_court(Court(court2_id, True))
-        slot_17.add_court(Court(court3_id, False))
-        slot_17.add_court(Court(court4_id, True))
+        slot_17.add_court(Court(court1_id, True))
+        slot_17.add_court(Court(court2_id, False))
+        slot_17.add_court(Court(court3_id, True))
+        slot_17.add_court(Court(court4_id, False))
 
         slot_18.add_court(Court(court1_id, False))
         slot_18.add_court(Court(court2_id, True))

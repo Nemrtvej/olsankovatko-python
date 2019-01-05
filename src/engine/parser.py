@@ -7,7 +7,7 @@ from typing import List, Dict
 import re
 import json
 
-TimeMatrix = Dict[str, Dict[int, bool]]
+TypeTimeMatrix = Dict[str, Dict[int, bool]]
 
 class Parser:
 
@@ -49,13 +49,13 @@ class Parser:
         day = Day(self.parse_day_date(date_string))
         schedule.add_day(day)
 
-        for slot in self.generate_slots_from_matrix(matrix, slot_length):
+        for slot in self.generate_slots_from_matrix(matrix):
             day.add_slot(slot)
 
         return schedule
 
     @staticmethod
-    def generate_matrix(first_slot_time: int, last_slot_time: int, slot_length: int, court_ids: List[str]) -> TimeMatrix:
+    def generate_matrix(first_slot_time: int, last_slot_time: int, slot_length: int, court_ids: List[str]) -> TypeTimeMatrix:
         """
         Return matrix representing states of slots in various times.
         First index is ID of court
@@ -87,7 +87,7 @@ class Parser:
         :param last_slot_time:  Time in minutes in which the last slot ends.
         :param slot_length: Time in minutes how long does the slot takes.
         :param court_ids:
-        :return: TimeMatrix
+        :return: TypeTimeMatrix
         """
         duration = last_slot_time - first_slot_time
         number_of_slots = int(duration / slot_length) + 1
@@ -152,14 +152,15 @@ class Parser:
 
         return result
 
-    def generate_slots_from_matrix(self, matrix: TimeMatrix, slot_length: int) -> List[TypeSlot]:
+    def generate_slots_from_matrix(self, matrix: TypeTimeMatrix) -> List[TypeSlot]:
         slots_by_time = {} # type: Dict[int, TypeSlot]
 
-        for court_name, time_entries in enumerate(matrix):
-            for slot_start, is_occupied in enumerate(time_entries):
+        for court_name in matrix:
+            for slot_start in matrix.get(court_name):
+                is_occupied = matrix.get(court_name).get(slot_start)
                 court = Court(court_name, not is_occupied)
-                if slots_by_time.get(time) is None:
-                    new_slot = Slot(time(int(slot_start / slot_length), slot_start % slot_length))
+                if slots_by_time.get(slot_start) is None:
+                    new_slot = Slot(time(int(slot_start / 60), slot_start % 60))
                     slots_by_time.update({slot_start: new_slot})
                 slots_by_time.get(slot_start).add_court(court)
 
