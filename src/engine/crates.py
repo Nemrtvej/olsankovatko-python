@@ -74,6 +74,8 @@ class Schedule:
     def __repr__(self) -> str:
         return "Days: %s." % (self.get_days())
 
+    def __eq__(self, other):
+        return self.__repr__() == other.__repr__()
 
 if __name__ == '__main__':
     s = Schedule()
