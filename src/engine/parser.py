@@ -11,7 +11,6 @@ TypeTimeMatrix = Dict[str, Dict[int, bool]]
 
 class Parser:
 
-
     def parse_schedule(self, html_page: str) -> Schedule:
 
         courts = ['kurt 1', 'kurt 2', 'kurt 3', 'kurt 4']

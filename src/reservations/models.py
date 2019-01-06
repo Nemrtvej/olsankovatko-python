@@ -18,3 +18,11 @@ class Reservation(models.Model):
     preferred_courts = models.TextField(validators=[validate_comma_separated_integer_list])
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
+
+class Court(models.Model):
+    olsanka_id = models.IntegerField("Court ID in Olšanka reservation system")
+    name = models.CharField("Court name", max_length=60)
+    sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

@@ -2,6 +2,7 @@ from typing import Type, List, Union
 from datetime import time, date
 
 TypeCourt = Union[Type['Court'], 'Court']
+TypeSchedule = Union[Type['Schedule'], 'Schedule']
 TypeSlot = Union[Type['Slot'], 'Slot']
 TypeDay = Union[Type['Day'], 'Day']
 
@@ -44,32 +45,32 @@ class Slot:
 
 class Day:
 
-    def __init__(self, day: date):
-        self.day = day
-        self.slots = list() # type: List[TypeSlot]
+    def __init__(self, date: date):
+        self._date = date
+        self._slots = list() # type: List[TypeSlot]
 
     def add_slot(self, slot: TypeSlot) -> None:
-        self.slots.append(slot)
+        self._slots.append(slot)
 
     def get_slots(self) -> List[TypeSlot]:
-        return self.slots
+        return self._slots
 
-    def get_day(self) -> date:
-        return self.day
+    def get_date(self) -> date:
+        return self._date
 
     def __repr__(self) -> str:
-        return "Day: %s. Slots: %s" % (self.get_day(), self.get_slots())
+        return "Date: %s. Slots: %s" % (self.get_date(), self.get_slots())
 
 class Schedule:
 
     def __init__(self):
-        self.days = list()
+        self._days = list()
 
     def add_day(self, day: TypeDay):
-        self.days.append(day)
+        self._days.append(day)
 
     def get_days(self) -> List[TypeDay]:
-        return self.days
+        return self._days
 
     def __repr__(self) -> str:
         return "Days: %s." % (self.get_days())
